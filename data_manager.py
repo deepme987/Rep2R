@@ -1,6 +1,8 @@
 
 from sites import Site
 
+from global_timer import TIMER
+
 
 class DataManager:
     def __init__(self):
@@ -15,15 +17,27 @@ class DataManager:
             self.RO_sites[var] = {1 + var % 10}
         self.RO_sites = {str(k): v for k, v in sorted(self.RO_sites.items(), key=lambda x: x[0])}
 
+        self.last_failure = {site.id: -1 for site in self.up_sites}
+
     def read(self, sites, var):
         """ Validate tx, locks and read if allowed """
         for site in sites:
             if site not in self.up_sites:
                 print(f"Skipping Read; Site {site} is down")
+                continue
             data = self.sites[site].read_data(var)
             if data:
-                return {var: data}
+                return {var: data}, [site]
         return False
+
+    def validate_and_commit(self, data):
+        for var, (value, sites) in data.items():
+            for site, time_stamp in sites.items():
+                if site not in self.up_sites or self.last_failure[site] > time_stamp:
+                    return False
+
+        for var, (value, sites) in data.items():
+            self.write(sites, var, value)
 
     def write(self, sites, var, value):
         """ Validate tx, locks and write if allowed """
@@ -61,6 +75,7 @@ class DataManager:
         for site_id in self.up_sites:
             if int(site) == site_id:
                 self.up_sites.remove(site_id)
+        self.last_failure[site] = TIMER
         # Remove site from the RO list of sites
         for var in self.RO_sites:
             if site in self.RO_sites[var]:
@@ -69,11 +84,11 @@ class DataManager:
         # TODO: remaining failure
         ...
 
-    def handle_recovery(self):
+    def handle_recovery(self, site):
         """
             Simulate recovery in site s;
         """
-        ...
+        self.up_sites.append(self.sites[site])
 
     def dump(self):
         """ Get all variables from all sites and dump """

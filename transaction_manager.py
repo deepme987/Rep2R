@@ -4,6 +4,8 @@ import re
 from transaction import Transaction
 from data_manager import DataManager
 
+from global_timer import *
+
 
 class TransactionManager:
     def __init__(self):
@@ -29,6 +31,7 @@ class TransactionManager:
 
     def input_parser(self, file_path: str = "mini_test.txt"):
         """ Read inputs one by one execute them """
+        reset_timer()
         with open(file_path, 'r') as fil:
             for line in fil.readlines():
                 if line != "\n" and "//" not in line:
@@ -38,6 +41,7 @@ class TransactionManager:
                     else:
                         args = re.findall(r'\(.*\)', line)[0][1:-1].split(",")
                         args = [arg.strip() for arg in args]
+                        increment_timer()
                         if args != ['']:
                             print(f"{tx} - {self.function_mapper[tx].__name__}({','.join(args)})")
                             self.function_mapper[tx](*args)
@@ -80,7 +84,6 @@ class TransactionManager:
 
     def end_transaction(self, tx):
         """" Commit - if any, and delete tx from list """
-        # TODO: Validate commit
         self.transactions[tx].commit(self.dm_handler)
 
     def routing(self, var):

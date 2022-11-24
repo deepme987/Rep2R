@@ -1,23 +1,32 @@
 
 import time
 
+from global_timer import TIMER
+
+# TODO: available copies
+
 
 class Transaction:
     def __init__(self, _id, RO_flag=False):
         self.id = _id
-        self.data = {}
+        self.data = {}  # {var: value, {s1: time1, s2: time2}}
         self.locks = {}
         self.RO_flag = RO_flag
-        self.start_time = time.time()
+        self.start_time = TIMER
         self.sites_accessed = []  # Compare these with time of commit - if anything fails, abort
 
     def read(self, sites, var, dm_handler):
         """ Read from site s """
         if self.RO_flag:
             return {var: self.data[var]}
-        result = dm_handler.read(sites, var)
+        result, updated_site = dm_handler.read(sites, var)
         if result:
-            self.data[var] = (result[var], sites)
+            if var in self.data:
+                if updated_site not in self.data[var][1]:
+                    self.data[var][1][updated_site] = TIMER
+                self.data[var][0] = result[var]
+            else:
+                self.data[var] = [result[var], {updated_site: TIMER}]
         return result
 
     def ro_read(self, dm_handler):
@@ -33,8 +42,15 @@ class Transaction:
 
     def write(self, sites, var, value):
         """ Write/ Save x in transaction T """
-        assert not self.RO_flag, f"Transaction: {self.id} is in Read-Only mode. Failed to write: {var}: {value}"
-        self.data[var] = (value, sites)  # {var: (value, sites)}
+        if self.RO_flag:
+            print(f"Transaction: {self.id} is in Read-Only mode. Failed to write: {var}: {value}")
+        if var in self.data:
+            for site in sites:
+                if site not in self.data[var][1]:
+                    self.data[var][1][site] = TIMER
+            self.data[var][0] = value
+        else:
+            self.data[var] = [value, {site: TIMER for site in sites}]  # {var: (value, sites, TIMER)}
         return True
 
     def request_lock(self):
@@ -47,11 +63,13 @@ class Transaction:
 
     def commit(self, dm_handler):
         """ Validate and commit all updated variables into all up_sites """
-        # TODO: Validate the commit
         if self.RO_flag:
             return True
-        for var, (value, sites) in self.data.items():
-            dm_handler.write(sites, var, value)
+
+        result = dm_handler.validate_and_commit(self.data)
+        if not result:
+            print(f"Aborting Transaction {self.id}")
+        return result
 
     def abort(self):
         """ Release locks and abort T """

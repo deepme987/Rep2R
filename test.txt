@@ -70,7 +70,7 @@ begin(T1)
 begin(T2)
 R(T1,x3)
 W(T2,x8,88) 
-fail(2)si
+fail(2)
 R(T2,x3)
 W(T1, x4,91)
 recover(2)
