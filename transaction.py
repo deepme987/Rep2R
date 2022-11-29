@@ -62,7 +62,7 @@ class Transaction:
             valid_status = [0]
         if dm_handler.read_lock_status(var) in valid_status:
             locks = dm_handler.set_lock(sites, var, lock_type,self.id)
-            self.locks[var] = locks.get(var)
+            self.locks[var] = {s:locks[s][var] for s in sites}
             print(f"in transaction self.locks {self.locks}")
         else:
             return False
@@ -70,11 +70,9 @@ class Transaction:
 
     def release_lock(self, dm_handler):
         """ Release locks on end """
-
         for var in self.locks.keys():
             sites = [x for x in dict(self.locks[var]).keys() if x in dm_handler.up_sites]
             locks = dm_handler.set_lock(sites, var, 0,None)
-            self.locks[var]=locks[var]
             print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
         self.locks ={}
     def commit(self, dm_handler):
