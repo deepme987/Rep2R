@@ -1,4 +1,3 @@
-
 from sites import Site
 
 from global_timer import TIMER
@@ -13,18 +12,17 @@ class DataManager:
         self.RO_sites = {}  # dictionary of sites to lookup for RO data
         for var in range(2, 21, 2):
             self.RO_sites[var] = {*range(1, 11)}
-            self.locks[var]={*range(1, 11)}
+            self.locks[var] = {*range(1, 11)}
         for var in range(1, 21, 2):
             self.RO_sites[var] = {1 + var % 10}
-            self.locks[var]={1 + var % 10}
+            self.locks[var] = {1 + var % 10}
 
         self.RO_sites = {str(k): v for k, v in sorted(self.RO_sites.items(), key=lambda x: x[0])}
-        self.locks =  {str(k):v for k, v in sorted(self.locks.items())}
+        self.locks = {str(k): v for k, v in sorted(self.locks.items())}
         # lock initialize to 0, value  0 : when no lock present, 1: when read lock 2: when write lock
-        for i in range(1,21):
-            self.locks[str(i)] = {v:0 for v in self.locks.get(str(i))}
+        for i in range(1, 21):
+            self.locks[str(i)] = {v: 0 for v in self.locks.get(str(i))}
         self.last_failure = {site.id: -1 for site in self.up_sites}
-
 
     def read(self, sites, var):
         """ Validate tx, locks and read if allowed """
@@ -67,21 +65,19 @@ class DataManager:
         else:
             return False
 
-    def set_lock(self,sites,var,lock_type):
+    def set_lock(self, sites, var, lock_type):
         """" Update lock status on site s for var x """
         for s in sites:
             if s in self.up_sites:
-                self.locks[var][s]=lock_type
+                self.locks[var][s] = lock_type
 
-
-    def read_lock_status(self,var):
+    def read_lock_status(self, var):
         """ Return lock status  """
         max_lock = 0
         for x in self.locks[var]:
             if x in self.up_sites:
-                if self.locks[var][x] >max_lock:
+                if self.locks[var][x] > max_lock:
                     max_lock = self.locks[var][x]
-
 
         return max_lock
 

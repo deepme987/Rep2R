@@ -1,4 +1,3 @@
-
 import re
 
 from transaction import Transaction
@@ -66,7 +65,7 @@ class TransactionManager:
         """ Execute transaction tx """
         var = var[1]
         sites = self.routing(var)
-        if self.transactions[tx].request_lock(sites,var,1,self.dm_handler):
+        if self.transactions[tx].request_lock(sites, var, 1, self.dm_handler):
 
             result = self.transactions[tx].read(sites, var, self.dm_handler)
             if result:
@@ -80,7 +79,7 @@ class TransactionManager:
         """ Execute transaction tx """
         var = var[1]
         sites = self.routing(var)
-        if self.transactions[tx].request_lock(sites, var, 2,self.dm_handler):
+        if self.transactions[tx].request_lock(sites, var, 2, self.dm_handler):
             self.printer(f"Acquiring Write Lock Successful: {tx}: x{var} - {value}; Sites: {sites}")
             result = self.transactions[tx].write(sites, var, value)
             if result:
@@ -89,7 +88,6 @@ class TransactionManager:
                 self.printer(f"Error writing at : {tx}: x{var} - {value}; Sites: {sites}")
         else:
             self.printer(f"Failed getting write locks at : {tx}: x{var} - {value}; Sites: {sites}")
-
 
     def end_transaction(self, tx):
         """" Commit - if any, and delete tx from list """
