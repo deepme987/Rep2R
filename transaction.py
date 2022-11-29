@@ -3,15 +3,14 @@ import time
 from global_timer import timer
 
 
-
 class Transaction:
     def __init__(self, _id, RO_flag=False):
         self.id = _id
 
         self.data = {}  # {var: value, {s1: time1, s2: time2}}
-        self.locks = {}  # to be removed
+        self.locks = {} 
         self.RO_flag = RO_flag
-        self.start_time = TIMER
+        self.start_time = timer.time
         self.sites_accessed = []  # Compare these with time of commit - if anything fails, abort
 
 
@@ -51,28 +50,31 @@ class Transaction:
             self.data[var][0] = value
         else:
 
-            self.data[var] = [value, {site: TIMER for site in sites}]  # {var: (value, sites, TIMER)}
+            self.data[var] = [value, {site: timer.time for site in sites}]  # {var: (value, sites, TIMER)}
 
         return True
 
     def request_lock(self, sites, var, lock_type, dm_handler):
         """ Request for a new lock """
-
         if lock_type == 1:
             valid_status = [0, 1]
         else:
             valid_status = [0]
         if dm_handler.read_lock_status(var) in valid_status:
-            dm_handler.set_lock(sites, var, lock_type)
+            locks = dm_handler.set_lock(sites, var, lock_type,self.id)
+            self.locks[var] = locks.get(var)
+            print(f"in transaction self.locks {self.locks}")
         else:
             return False
         return True
 
     def release_lock(self, dm_handler):
         """ Release locks on end """
+        print(f"printing self.data {self.data} tx id {self.id}")
         for var in self.data.keys():
             sites = [x for x in dict(self.data[var][1]).keys() if x in dm_handler.up_sites]
-            dm_handler.set_lock(sites, var, 0)
+            locks = dm_handler.set_lock(sites, var, 0,None)
+            self.locks.pop(var)
             print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
 
     def commit(self, dm_handler):
