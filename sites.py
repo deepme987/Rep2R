@@ -13,7 +13,12 @@ class Site:
         self.id = _id
         self.data = {}  # list of variables in the site
         self.status = 1  # 1 for up, 0 for down
-        self.locks = {}
+        self.locks ={str(i):0 for i in range(2,21,2)} # TBC whether to be removed
+        # 0 for no lock, 1 for read lock, 2 for write lock  - Initialize with 0
+        if self.id % 2 == 0:
+            for i in range(1,21,2):
+                if (1+i%10 == self.id):
+                    self.locks[i] = 0
         self.path = SITES_PATH + str(self.id) + ".json"
 
         self.flush()
