@@ -1,7 +1,7 @@
 
 from sites import Site
 
-from global_timer import TIMER
+from global_timer import timer
 
 
 class DataManager:
@@ -39,6 +39,8 @@ class DataManager:
         for var, (value, sites) in data.items():
             self.write(sites, var, value)
 
+        return True
+
     def write(self, sites, var, value):
         """ Validate tx, locks and write if allowed """
         # Update RO_sites accordingly
@@ -53,7 +55,7 @@ class DataManager:
             if len(self.RO_sites[var]) > 0:
                 result = self.read(self.RO_sites[var], var)
                 if result:
-                    data[var] = result[var]
+                    data[var] = result[0][var]
                     continue
         if data:
             return data
@@ -75,7 +77,7 @@ class DataManager:
         for site_id in self.up_sites:
             if int(site) == site_id:
                 self.up_sites.remove(site_id)
-        self.last_failure[site] = TIMER
+        self.last_failure[site] = timer.time
         # Remove site from the RO list of sites
         for var in self.RO_sites:
             if site in self.RO_sites[var]:
