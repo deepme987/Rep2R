@@ -1,12 +1,11 @@
+class Timer:
+    def __init__(self):
+        self.time = 0
 
-TIMER = 0
+    def reset_timer(self):
+        self.time = 0
 
+    def increment_timer(self):
+        self.time += 1
 
-def reset_timer():
-    global TIMER
-    TIMER = 0
-
-
-def increment_timer():
-    global TIMER
-    TIMER += 1
+timer = Timer()
