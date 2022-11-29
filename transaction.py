@@ -1,14 +1,19 @@
+import time
 
 from global_timer import timer
+
 
 
 class Transaction:
     def __init__(self, _id, RO_flag=False):
         self.id = _id
-        self.data = {}              # {var: value, {s1: time1, s2: time2}}
-        self.locks = {}             # List of locks held by the transaction
-        self.RO_flag = RO_flag      # Read-Only flag - if True, tx methods work separately
-        self.start_time = timer.time     # Not really required?
+
+        self.data = {}  # {var: value, {s1: time1, s2: time2}}
+        self.locks = {}  # to be removed
+        self.RO_flag = RO_flag
+        self.start_time = TIMER
+        self.sites_accessed = []  # Compare these with time of commit - if anything fails, abort
+
 
     def read(self, sites, var, dm_handler):
         """ Read from site s """
@@ -45,16 +50,30 @@ class Transaction:
                     self.data[var][1][site] = timer.time
             self.data[var][0] = value
         else:
-            self.data[var] = [value, {site: timer.time for site in sites}]  # {var: (value, sites, TIMER)}
+
+            self.data[var] = [value, {site: TIMER for site in sites}]  # {var: (value, sites, TIMER)}
+
         return True
 
-    def request_lock(self):
+    def request_lock(self, sites, var, lock_type, dm_handler):
         """ Request for a new lock """
-        ...
 
-    def release_lock(self):
+        if lock_type == 1:
+            valid_status = [0, 1]
+        else:
+            valid_status = [0]
+        if dm_handler.read_lock_status(var) in valid_status:
+            dm_handler.set_lock(sites, var, lock_type)
+        else:
+            return False
+        return True
+
+    def release_lock(self, dm_handler):
         """ Release locks on end """
-        ...
+        for var in self.data.keys():
+            sites = [x for x in dict(self.data[var][1]).keys() if x in dm_handler.up_sites]
+            dm_handler.set_lock(sites, var, 0)
+            print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
 
     def commit(self, dm_handler):
         """ Validate and commit all updated variables into all up_sites """
