@@ -9,7 +9,7 @@ class DataManager:
         self.sites.extend([Site(i) for i in range(1, 11)])
         self.up_sites = self.sites[1:]
         self.locks = {}  # store all locks on all vars in all sites
-
+        #self.site_status = {site:("up",-1) for site in self.up_sites}
         self.RO_sites = {}  # dictionary of sites to lookup for RO data
         for var in range(2, 21, 2):
             self.RO_sites[var] = {*range(1, 11)}
@@ -31,12 +31,12 @@ class DataManager:
             if site not in self.up_sites:
                 print(f"Skipping Read; Site {site} is down")
                 continue
-            if dict(self.locks[site])[var][0]==1: #Is txn id to be verified?
-                data = self.sites[site].read_data(var)
-                if data:
-                    return {var: data}, [site]
-            else:
-                print(f"Read not possible as read lock not acquired")
+            if var in self.locks[site].keys() and self.locks[site][var][0] != 1: #should txn id be verified?
+                continue
+            data = self.sites[site].read_data(var)
+            if data:
+                return {var: data}, [site]
+
         return False
 
     def validate_and_commit(self, data):
@@ -98,19 +98,29 @@ class DataManager:
             if int(site) == site_id:
                 self.up_sites.remove(site_id)
         self.last_failure[site] = timer.time
+        # Update status in site_status
         # Remove site from the RO list of sites
         for var in self.RO_sites:
             if site in self.RO_sites[var]:
                 self.RO_sites[var].remove(site)
-
-        # TODO: remaining failure
-        ...
+        # Make all the locks for the site unlockable
+        for var in self.locks[site]:
+            self.locks[site][var]=(-1,None)
+        # Implement site related failure
+        self.sites[site].failure()
 
     def handle_recovery(self, site):
         """
             Simulate recovery in site s;
         """
         self.up_sites.append(self.sites[site])
+        #added site to RO_sites
+        for var in self.RO_sites:
+            self.RO_sites[var].append(site)
+        # Make all the locks for the site lockable
+        for var in self.locks[site]:
+            self.locks[site][var]=(0,None)
+        self.sites[site].recovery()
 
     def dump(self):
         """ Get all variables from all sites and dump """

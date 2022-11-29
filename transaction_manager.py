@@ -118,7 +118,7 @@ class TransactionManager:
 
     def recover(self, site):
         """ recover site S from failure """
-        ...
+        self.dm_handler.handle_recovery(site)
 
     def printer(self, message):
         """ Print whatever you want """
