@@ -8,7 +8,7 @@ class Transaction:
         self.id = _id
 
         self.data = {}  # {var: value, {s1: time1, s2: time2}}
-        self.locks = {} 
+        self.locks = {}
         self.RO_flag = RO_flag
         self.start_time = timer.time
         self.sites_accessed = []  # Compare these with time of commit - if anything fails, abort
@@ -70,13 +70,13 @@ class Transaction:
 
     def release_lock(self, dm_handler):
         """ Release locks on end """
-        print(f"printing self.data {self.data} tx id {self.id}")
-        for var in self.data.keys():
-            sites = [x for x in dict(self.data[var][1]).keys() if x in dm_handler.up_sites]
-            locks = dm_handler.set_lock(sites, var, 0,None)
-            self.locks.pop(var)
-            print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
 
+        for var in self.locks.keys():
+            sites = [x for x in dict(self.locks[var]).keys() if x in dm_handler.up_sites]
+            locks = dm_handler.set_lock(sites, var, 0,None)
+            self.locks[var]=locks[var]
+            print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
+        self.locks ={}
     def commit(self, dm_handler):
         """ Validate and commit all updated variables into all up_sites """
         if self.RO_flag:

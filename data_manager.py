@@ -30,15 +30,19 @@ class DataManager:
             if site not in self.up_sites:
                 print(f"Skipping Read; Site {site} is down")
                 continue
-            data = self.sites[site].read_data(var)
-            if data:
-                return {var: data}, [site]
+            if dict(self.locks[var])[site][0]==1: #Is txn id to be verified?
+                data = self.sites[site].read_data(var)
+                if data:
+                    return {var: data}, [site]
+            else:
+                print(f"Read not possible as read lock not acquired")
         return False
 
     def validate_and_commit(self, data):
         for var, (value, sites) in data.items():
             for site, time_stamp in sites.items():
-                if site not in self.up_sites or self.last_failure[site] > time_stamp:
+                if site not in self.up_sites or self.last_failure[site] > time_stamp or\
+                        (not self.locks[var] or not dict(self.locks[var])[site] or not dict(self.locks[var])[site][0] or dict(self.locks[var])[site][0]!=2):
                     return False
 
         for var, (value, sites) in data.items():
