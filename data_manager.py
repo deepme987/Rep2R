@@ -11,18 +11,16 @@ class DataManager:
         self.locks = {}  # store all locks on all vars in all sites
         # self.site_status = {site:("up",-1) for site in self.up_sites}
         self.RO_sites = {}  # dictionary of sites to lookup for RO data
+
+
         for var in range(2, 21, 2):
             self.RO_sites[var] = {*range(1, 11)}
         for var in range(1, 21, 2):
             self.RO_sites[var] = {1 + var % 10}
 
-        # lock initialize to 0, value  0 : when no lock present, 1: when read lock 2: when write lock
-        even_replicated_var = {str(v): (0, None) for v in range(2, 21, 2)}
-        for site in range(1, 11):
-            odd_unreplicated_var = {str(v): (0, None) for v in range(1, 21, 2) if site == 1 + v % 10}
-            self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
-        print(f"locks2 - {self.locks}")
+
         self.RO_sites = {str(k): v for k, v in sorted(self.RO_sites.items(), key=lambda x: x[0])}
+        print(f"ROsites {self.RO_sites}")
         self.last_failure = {site.id: -1 for site in self.up_sites}
 
     def read(self, sites, var, ro_flag=False):
@@ -114,10 +112,11 @@ class DataManager:
         """
             Simulate recovery in site s;
         """
+        site = int(site)
         self.up_sites.append(self.sites[site])
         # added site to RO_sites
         for var in self.RO_sites:
-            self.RO_sites[var].append(site)
+            self.RO_sites[var].add(site)
         # Make all the locks for the site lockable
         for var in self.locks[site]:
             self.locks[site][var] = (0, None)
@@ -133,4 +132,11 @@ class DataManager:
     def flush_sites(self):
         for site in self.sites[1:]:
             site.flush()
+        #Flush the locks for each site
+        # lock initialize to 0, value  0 : when no lock present, 1: when read lock 2: when write lock
+        even_replicated_var = {str(v): (0, None) for v in range(2, 21, 2)}
+        for site in range(1, 11):
+            odd_unreplicated_var = {str(v): (0, None) for v in range(1, 21, 2) if site == 1 + v % 10}
+            self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
+        print(f"locks2 - {self.locks}")
         return True

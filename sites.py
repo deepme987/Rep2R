@@ -48,8 +48,9 @@ class Site:
 
     def recovery(self):
         """ Recover a site from failure """
+
         for var in self.var_status:
-            if 1 + var % 10 == self.id:
+            if int(1 + int(var) % 10) == self.id:
                 self.var_status[var] = "up"
 
     def dump(self):

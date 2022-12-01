@@ -24,7 +24,7 @@ class Transaction:
                     self.data[var][1][updated_site] = timer.time
                 self.data[var][0] = result[var]
             else:
-                self.data[var] = [result[var], {updated_site: timer.time}]
+                self.data[var] = [result[var], {updated_site[0]: timer.time}]
         return result
 
     def ro_read(self, dm_handler):
