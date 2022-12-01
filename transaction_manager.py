@@ -91,7 +91,13 @@ class TransactionManager:
         _var = var
         var = var[1]
         sites = self.routing(var)
-        if self.transactions[tx].request_lock(sites, var, 1, self.dm_handler):
+        if self.transactions[tx].RO_flag:
+            result = self.transactions[tx].read(sites, var, self.dm_handler)
+            if result:
+                self.printer(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
+            else:
+                self.printer(f"Error reading at : {tx}: x{var}; Sites: {sites}")
+        elif self.transactions[tx].request_lock(sites, var, 1, self.dm_handler):
             result = self.transactions[tx].read(sites, var, self.dm_handler)
             if result:
                 self.printer(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
