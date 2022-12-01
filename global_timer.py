@@ -8,4 +8,5 @@ class Timer:
     def increment_timer(self):
         self.time += 1
 
+
 timer = Timer()
