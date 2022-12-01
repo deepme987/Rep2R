@@ -114,11 +114,11 @@ class TransactionManager:
 
     def fail(self, site):
         """ Simulate failure in site S """
-        self.dm_handler.handle_failure(site)
+        self.dm_handler.handle_failure(int(site))
 
     def recover(self, site):
         """ recover site S from failure """
-        ...
+        self.dm_handler.handle_recovery(int(site))
 
     def printer(self, message):
         """ Print whatever you want """
