@@ -51,8 +51,9 @@ class Site:
         for var in self.var_status:
             self.var_status[var] = "down"
         for var in range(2, 21, 2):
-            if (var % 2 == 0) and var in self.data:
-                dict(self.data).pop(var)
+            if (var % 2 == 0) and str(var) in self.data:
+                self.data.pop(str(var))
+        print(f"sites fail - {self.id} - {self.data}")
 
     def recovery(self) -> None:
         """ Recover a site from failure """

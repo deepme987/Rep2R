@@ -109,7 +109,8 @@ class Transaction:
         """Erase locks on a site failure"""
         for var in self.data.keys():
             if site in self.locks[var].keys():
-                self.locks[var][site] = (0, [])
+                #self.locks[var][site] = (0, [])
+                self.locks[var].pop(site)
     def commit(self, dm_handler) -> bool:
         """ Validate and commit all updated variables into all up_sites
         :param dm_handler: DM Handler
