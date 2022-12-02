@@ -87,7 +87,7 @@ class Transaction:
             valid_status = [0]
 
         lock_status = dm_handler.read_lock_status(var)
-        if lock_status[0] in valid_status or self.id==lock_status[1]:
+        if lock_status[0] in valid_status or (lock_status[1] and self.id in lock_status[1] and len(lock_status)==1):
             locks = dm_handler.set_lock(sites, var, lock_type, self.id)
             self.locks[var] = {s: locks[s][var] for s in sites}
             print(f"in transaction self.locks {self.locks}")
@@ -101,10 +101,15 @@ class Transaction:
         """
         for var in self.locks.keys():
             sites = [x for x in dict(self.locks[var]).keys() if x in dm_handler.up_sites]
-            locks = dm_handler.set_lock(sites, var, 0, None)
+            locks = dm_handler.set_lock(sites, var, 0, self.id)
             print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
         self.locks = {}
 
+    def erase_lock(self, site):
+        """Erase locks on a site failure"""
+        for var in self.data.keys():
+            if site in self.locks[var].keys():
+                self.locks[var][site] = (0, [])
     def commit(self, dm_handler) -> bool:
         """ Validate and commit all updated variables into all up_sites
         :param dm_handler: DM Handler

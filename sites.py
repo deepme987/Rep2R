@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 import os
 import json
@@ -36,7 +37,7 @@ class Site:
         :param value: value of updated data
         :return: success/ failure
         """
-        self.data[var] = value
+        self.data[var] = int(value)
         if self.var_status[var] == "down":
             self.var_status[var] = "up"
         with open(self.path, 'w') as fil:

@@ -1,3 +1,4 @@
+from __future__ import annotations
 
 import re
 from collections import defaultdict
@@ -164,7 +165,7 @@ class TransactionManager:
         :param tx: transaction_id
         """
         self.transactions[tx].abort(self.dm_handler)
-        del self.transactions[tx]
+        #del self.transactions[tx]
 
     def routing(self, var: str) -> list:
         """ Find the site to route execution of T
@@ -173,7 +174,8 @@ class TransactionManager:
         """
         var = int(var)
         if var % 2 == 1:
-            sites = [1 + var % 10]
+            site_id = 1 + var % 10
+            sites = [site_id for site in self.dm_handler.up_sites if site_id == site.id]
         else:
             sites = [site.id for site in self.dm_handler.up_sites]
         return sites
@@ -241,6 +243,8 @@ class TransactionManager:
         :param site: site to simulate failure
         """
         self.dm_handler.handle_failure(int(site))
+        for tx in self.transactions:
+            self.transactions[tx].erase_lock(int(site))
 
     def recover(self, site: str) -> None:
         """ Recover site S from failure
