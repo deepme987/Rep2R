@@ -193,9 +193,9 @@ class DataManager:
             site.flush()
         # Flush the locks for each site
         # lock initialize to 0, value  0 : when no lock present, 1: when read lock 2: when write lock
-        even_replicated_var = {str(v): (0, [None]) for v in range(2, 21, 2)}
+        even_replicated_var = {str(v): (0, []) for v in range(2, 21, 2)}
         for site in range(1, 11):
-            odd_unreplicated_var = {str(v): (0, [None]) for v in range(1, 21, 2) if site == 1 + v % 10}
+            odd_unreplicated_var = {str(v): (0, []) for v in range(1, 21, 2) if site == 1 + v % 10}
             self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
         print(f"locks2 - {self.locks}")
         return True
