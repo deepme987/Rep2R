@@ -1,4 +1,3 @@
-
 from global_timer import timer
 
 
@@ -13,6 +12,8 @@ class Transaction:
         self.RO_flag = RO_flag
         self.start_time = timer.time
         self.sites_accessed = []  # Compare these with time of commit - if anything fails, abort
+
+        print(f"Began transaction {self.id}")
 
     def read(self, sites: list, var: str, dm_handler) -> dict:
         """ Read from site s
@@ -87,10 +88,10 @@ class Transaction:
             valid_status = [0]
 
         lock_status = dm_handler.read_lock_status(var)
-        if lock_status[0] in valid_status or (lock_status[1] and self.id in lock_status[1] and len(lock_status[1])==1):
+        if lock_status[0] in valid_status or (
+                lock_status[1] and self.id in lock_status[1] and len(lock_status[1]) == 1):
             locks = dm_handler.set_lock(sites, var, lock_type, self.id)
             self.locks[var] = {s: locks[s][var] for s in sites}
-            print(f"in transaction self.locks {self.locks}")
         else:
             return False
         return True
@@ -109,8 +110,9 @@ class Transaction:
         """Erase locks on a site failure"""
         for var in self.data.keys():
             if site in self.locks[var].keys():
-                #self.locks[var][site] = (0, [])
+                # self.locks[var][site] = (0, [])
                 self.locks[var].pop(site)
+
     def commit(self, dm_handler) -> bool:
         """ Validate and commit all updated variables into all up_sites
         :param dm_handler: DM Handler
@@ -119,8 +121,11 @@ class Transaction:
         if self.RO_flag:
             return True
 
-        result = dm_handler.validate_and_commit(self.write_data)
-        if not result:
+        read_data = {k: v for k, v in self.data.items() if k not in self.write_data}
+        result = dm_handler.validate_and_commit(self.write_data, read_data)
+        if result:
+            print(f"Committed Transaction {self.id}")
+        else:
             print(f"Aborting Transaction {self.id}")
         return result
 

@@ -23,7 +23,7 @@ class DataManager:
         self.RO_sites = {str(k): v for k, v in sorted(self.RO_sites.items(), key=lambda x: x[0])}
         self.last_failure = {site.id: -1 for site in self.up_sites}
 
-    def read(self, sites: list, var: str, ro_flag: bool = False) -> tuple[dict[Any, Any], list[Any]] | bool:
+    def read(self, sites: list, var: str, ro_flag: bool = False) -> tuple[dict[Any, Any], list[Any]] | tuple[bool, Any]:
         """ Validate tx, locks and read if allowed
         :param sites: list of sites to read from
         :param var: variable in context
@@ -40,18 +40,25 @@ class DataManager:
             data = self.sites[site].read_data(var)
             if data:
                 return {var: data}, [site]
-        return False
+        return False, None
 
-    def validate_and_commit(self, data: dict) -> bool:
+    def validate_and_commit(self, data: dict, read_data: dict = None) -> bool:
         """ Validate transaction for commit
             Checks with failure sites and available locks
         :param data: data to be committed: {var: (value, {site: first_accessed})}
+        :param validate_data: additional data for validation of read vals
         :return:
         """
-        for var, (value, sites) in data.items():
+
+        validate_data = data
+        validate_data.update(read_data)
+
+        for var, (value, sites) in validate_data.items():
             for site, time_stamp in sites.items():
                 if site not in self.up_sites or self.last_failure[site] > time_stamp \
-                        or (site in self.locks and var in self.locks[site].keys() and self.locks[site][var][0] != 2):
+                        or (site in self.locks and var in self.locks[site].keys()
+                            and ((var not in read_data and self.locks[site][var][0] != 2)
+                            or (var in read_data and self.locks[site][var][0] == 0))):
                     return False
 
         for var, (value, sites) in data.items():
@@ -122,7 +129,6 @@ class DataManager:
                             self.locks[s][var] = (lock_type, self.locks[s][var][1])
                     else:
                         self.locks[s][var] = (lock_type, [])
-        print(f"self.locks {self.locks}")
         return self.locks
 
     def read_lock_status(self, var: str) -> tuple[int, str]:
@@ -197,5 +203,4 @@ class DataManager:
         for site in range(1, 11):
             odd_unreplicated_var = {str(v): (0, []) for v in range(1, 21, 2) if site == 1 + v % 10}
             self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
-        print(f"locks2 - {self.locks}")
         return True

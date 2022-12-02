@@ -1,4 +1,4 @@
-#from __future__ import annotations
+# from __future__ import annotations
 
 import re
 from collections import defaultdict
@@ -7,7 +7,7 @@ from transaction import Transaction
 from data_manager import DataManager
 from global_timer import timer
 
-DEBUG = False   # Verbose flag
+DEBUG = False  # Verbose flag
 
 
 class TransactionManager:
@@ -40,24 +40,29 @@ class TransactionManager:
         timer.reset_timer()
         with open(file_path, 'r') as fil:
             for line in fil.readlines():
-                if line != "\n" and "//" not in line:
-                    tx = line.split('(')[0]
+                if line != "\n":
+                    uncomment = line.strip().split("//")[0]
+                    tx = uncomment.split('(')[0]
+                    if len(tx) == 0 or "//" in uncomment:
+                        continue
                     if tx not in self.function_mapper:
                         print("SKIPPING -", line)
                     else:
+                        print(f"{timer.time}: ", end="")
                         self.deadlock_cycle()
                         if len(self.wait_queue) > 0:
                             temp_wait_queue = self.wait_queue
                             self.wait_queue = []
                             for transaction, function, args, _ in temp_wait_queue:
+                                print(f"Attempting transaction from wait queue:")
                                 if args != ['']:
-                                    if DEBUG:
-                                        print(f"{timer.time}: {transaction} - {function.__name__}({','.join(args)})")
+                                    print(f"{transaction.id} - {function.__name__}({','.join(args)})")
                                     function(*args)
                                 else:
-                                    if DEBUG:
-                                        print(f"{timer.time}: {transaction} - {function.__name__}()")
+                                    print(f"{transaction.id} - {function.__name__}()")
                                     function()
+                            print("Wait queue traversed, continuing with new input")
+                            print(f"{timer.time}: ", end="")
 
                         args = re.findall(r'\(.*\)', line)[0][1:-1].split(",")
                         args = [arg.strip() for arg in args]
@@ -65,7 +70,10 @@ class TransactionManager:
                         if args != ['']:
                             if DEBUG:
                                 print(f"{timer.time}: {tx} - {self.function_mapper[tx].__name__}({','.join(args)})")
-                            self.function_mapper[tx](*args)
+                            try:
+                                self.function_mapper[tx](*args)
+                            except TypeError:
+                                print("INVALID ARGUMENT in input, skipping line")
                         else:
                             if DEBUG:
                                 print(f"{timer.time}: {tx} - {self.function_mapper[tx].__name__}()")
@@ -114,6 +122,8 @@ class TransactionManager:
             if result:
                 print(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
             else:
+                self.wait_queue.append((self.transactions[tx], self.execute_read_transaction,
+                                        [tx, _var], {_var: 1}))
                 print(f"Error reading at : {tx}: x{var}; Sites: {sites}")
         else:
             self.wait_queue.append((self.transactions[tx], self.execute_read_transaction,
@@ -165,7 +175,7 @@ class TransactionManager:
         :param tx: transaction_id
         """
         self.transactions[tx].abort(self.dm_handler)
-        #del self.transactions[tx]
+        # del self.transactions[tx]
 
     def routing(self, var: str) -> list:
         """ Find the site to route execution of T
@@ -183,17 +193,22 @@ class TransactionManager:
     def deadlock_cycle(self) -> None:
         """ Create a tree from wait_queue and run DFS to find a cycle - Aborts youngest tx """
         conflicts = defaultdict(set)
+
         for i in range(len(self.wait_queue)):
             i_locks = self.wait_queue[i][3]
-            for j in range(len(self.wait_queue)):
-                if i == j:
+            for tx in self.transactions:
+                if self.wait_queue[i][0].id == self.transactions[tx].id:
                     continue
                 j_locks = {'x' + str(var): max([status for _, (status, _) in sites.items()])
-                           for var, sites in self.wait_queue[j][0].locks.items()}
+                           for var, sites in self.transactions[tx].locks.items()
+                           if len(sites) > 0
+                           }
+
                 for var in {*i_locks}.intersection({*j_locks}):
                     if i_locks[var] == 2 or j_locks[var] == 2:
-                        conflicts[i].add(j)
+                        conflicts[self.wait_queue[i][0].id].add(self.transactions[tx].id)
         path = self.dfs_handler(conflicts)
+        print(conflicts)
 
         if path:
             min_index, min_time = None, -1
@@ -254,6 +269,7 @@ class TransactionManager:
 
     def dump(self) -> None:
         """ Get all variables from all sites and dump """
+        print("Dump data")
         dump_data = self.dm_handler.dump()
         for site, var_val in sorted(dump_data.items(), key=lambda x: x[0]):
             print(f"Site {site}: {', '.join([f'{var}: {val}' for var, val in var_val.items()])}")
