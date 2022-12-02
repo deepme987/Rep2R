@@ -87,7 +87,7 @@ class Transaction:
             valid_status = [0]
 
         lock_status = dm_handler.read_lock_status(var)
-        if lock_status[0] in valid_status or (lock_status[1] and self.id in lock_status[1] and len(lock_status)==1):
+        if lock_status[0] in valid_status or (lock_status[1] and self.id in lock_status[1] and len(lock_status[1])==1):
             locks = dm_handler.set_lock(sites, var, lock_type, self.id)
             self.locks[var] = {s: locks[s][var] for s in sites}
             print(f"in transaction self.locks {self.locks}")
