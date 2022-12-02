@@ -7,6 +7,7 @@ class Transaction:
         self.id = _id
 
         self.data = {}  # {var: value, {s1: time1, s2: time2}}
+        self.write_data = {}
         self.locks = {}
         self.wait_for_vars = {}  # List of variables {var: lock_requested} tx is waiting for
         self.RO_flag = RO_flag
@@ -47,9 +48,12 @@ class Transaction:
             for site in sites:
                 if site not in self.data[var][1]:
                     self.data[var][1][site] = timer.time
+                    self.write_data[var][1][site] = timer.time
             self.data[var][0] = value
+            self.write_data[var][0] = value
         else:
             self.data[var] = [value, {site: timer.time for site in sites}]  # {var: (value, sites, TIMER)}
+            self.write_data[var] = self.data[var]
         return True
 
     def request_lock(self, sites, var, lock_type, dm_handler):
@@ -81,7 +85,7 @@ class Transaction:
         if self.RO_flag:
             return True
 
-        result = dm_handler.validate_and_commit(self.data)
+        result = dm_handler.validate_and_commit(self.write_data)
         if not result:
             print(f"Aborting Transaction {self.id}")
         return result
