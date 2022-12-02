@@ -51,6 +51,7 @@ W(T1, x5,91)
 end(T2)
 recover(2)
 end(T1)
+dump()
 
 // Test 3.5
 // T1 should not abort because site 4 did not fail.
@@ -76,6 +77,7 @@ W(T1, x4,91)
 recover(2)
 end(T2)
 end(T1)
+dump()
 
 // Test 3.7
 // T1 should not abort because site 4 did not fail.
@@ -97,6 +99,7 @@ recover(2)
 W(T1, x4,91)
 end(T2)
 end(T1)
+dump()
 
 // Test 4
 // Now T1 aborts, since site 2 died after T1 accessed it. T2 ok.
@@ -113,6 +116,7 @@ R(T1, x5)
 end(T2)
 recover(2)
 end(T1)
+dump()
 
 // Test 5
 // T1 fails again here because it wrote to a site that failed. T2 ok.
@@ -120,13 +124,13 @@ begin(T1)
 begin(T2)
 W(T1,x6,66)
 fail(2)
-W(T2,x8,88) 
+W(T2,x8,88)
 R(T2,x3)
 R(T1, x5)
 end(T2)
 recover(2)
 end(T1)
-
+dump()
 
 // Test 6
 // T1 ok. T2 ok. T2 reads from a recovering site, but odd variables only

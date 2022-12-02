@@ -1,4 +1,4 @@
-# from __future__ import annotations
+from __future__ import annotations
 
 import os
 import json
@@ -53,14 +53,13 @@ class Site:
         for var in range(2, 21, 2):
             if (var % 2 == 0) and str(var) in self.data:
                 self.data.pop(str(var))
-        print(f"Site fail: {self.id}; data = {self.data}")
+        print(f"sites fail - {self.id} - {self.data}")
 
     def recovery(self) -> None:
         """ Recover a site from failure """
         for var in self.var_status:
             if int(1 + int(var) % 10) == self.id:
                 self.var_status[var] = "up"
-        print(f"Site Recovered: {self.id}")
 
     def dump(self) -> dict:
         """ Returns the data in the site s """
