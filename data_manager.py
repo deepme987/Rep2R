@@ -38,8 +38,8 @@ class DataManager:
     def validate_and_commit(self, data):
         for var, (value, sites) in data.items():
             for site, time_stamp in sites.items():
-                if site not in self.up_sites or self.last_failure[site] > time_stamp or \
-                        (site in self.locks and var in self.locks[site].keys() and self.locks[site][var][0] != 2):
+                if site not in self.up_sites or self.last_failure[site] > time_stamp \
+                        or (site in self.locks and var in self.locks[site].keys() and self.locks[site][var][0] != 2):
                     return False
 
         for var, (value, sites) in data.items():
@@ -74,7 +74,11 @@ class DataManager:
         """" Update lock status on site s for var x """
         for s in sites:
             if s in self.up_sites:
-                self.locks[s][var] = (lock_type, tx_id)
+                if lock_type==1 and self.locks[s][var][1][0] is not None:
+                    txn_arr =[self.locks[s][var][1][0],tx_id]
+                    self.locks[s][var] = (lock_type, txn_arr)
+                else:
+                    self.locks[s][var] = (lock_type, [tx_id])
         # print(f"self.locks {self.locks}")
         return self.locks
 
@@ -135,9 +139,9 @@ class DataManager:
             site.flush()
         #Flush the locks for each site
         # lock initialize to 0, value  0 : when no lock present, 1: when read lock 2: when write lock
-        even_replicated_var = {str(v): (0, None) for v in range(2, 21, 2)}
+        even_replicated_var = {str(v): (0, [None]) for v in range(2, 21, 2)}
         for site in range(1, 11):
-            odd_unreplicated_var = {str(v): (0, None) for v in range(1, 21, 2) if site == 1 + v % 10}
+            odd_unreplicated_var = {str(v): (0, [None]) for v in range(1, 21, 2) if site == 1 + v % 10}
             self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
         print(f"locks2 - {self.locks}")
         return True
