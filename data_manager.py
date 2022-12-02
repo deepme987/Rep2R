@@ -20,7 +20,6 @@ class DataManager:
 
 
         self.RO_sites = {str(k): v for k, v in sorted(self.RO_sites.items(), key=lambda x: x[0])}
-        print(f"ROsites {self.RO_sites}")
         self.last_failure = {site.id: -1 for site in self.up_sites}
 
     def read(self, sites, var, ro_flag=False):
@@ -82,12 +81,14 @@ class DataManager:
     def read_lock_status(self, var):
         """ Return lock status  """
         max_lock = 0
+        txn=""
         for x in self.locks:
             if x in self.up_sites and var in self.locks[x].keys():
                 if self.locks[x][var][0] > max_lock:
                     max_lock = self.locks[x][var][0]
+                    txn = self.locks[x][var][1]
 
-        return max_lock
+        return (max_lock,txn)
 
     def handle_failure(self, site):
         """ Simulate failure in site s """
