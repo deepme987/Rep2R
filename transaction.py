@@ -44,9 +44,9 @@ class Transaction:
         """ Write/ Save x in transaction T - THIS DOES NOT COMMIT """
         if self.RO_flag:  # Cannot commit on RO locks
             print(f"Transaction: {self.id} is in Read-Only mode. Failed to write: {var}: {value}")
-        if var in self.data:
+        if var in self.write_data:
             for site in sites:
-                if site not in self.data[var][1]:
+                if site not in self.write_data[var][1]:
                     self.data[var][1][site] = timer.time
                     self.write_data[var][1][site] = timer.time
             self.data[var][0] = value
