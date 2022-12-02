@@ -1,3 +1,4 @@
+
 import os
 import json
 
@@ -13,7 +14,6 @@ class Site:
         self.locks = {}
         self.status = 1
         self.var_status = {}
-
         self.path = SITES_PATH + str(self.id) + ".json"
 
         self.flush()
@@ -21,14 +21,21 @@ class Site:
         with open(self.path, 'r') as fil:
             self.data = json.load(fil)
 
-    def read_data(self, var):
-        """ Returns data on var x in the site """
+    def read_data(self, var: str) -> int | bool:
+        """ Returns data on var x in the site
+        :param var: variable to read from
+        :return: value of variable if found, else False
+        """
         if var in self.data:
             return self.data[var]
         return False
 
-    def write_data(self, var, value):
-        """ Commit data into the file/ storage """
+    def write_data(self, var: str, value: int) -> bool:
+        """ Commit data into the file/ storage
+        :param var: variable to write data into
+        :param value: value of updated data
+        :return: success/ failure
+        """
         self.data[var] = value
         if self.var_status[var] == "down":
             self.var_status[var] = "up"
@@ -36,7 +43,7 @@ class Site:
             json.dump(self.data, fil)
         return True
 
-    def failure(self):
+    def failure(self) -> None:
         """ Simulate a site failure """
         # Make all replicated variables unavailable
         self.status = 0
@@ -46,18 +53,18 @@ class Site:
             if (var % 2 == 0) and var in self.data:
                 dict(self.data).pop(var)
 
-    def recovery(self):
+    def recovery(self) -> None:
         """ Recover a site from failure """
-
         for var in self.var_status:
             if int(1 + int(var) % 10) == self.id:
                 self.var_status[var] = "up"
 
-    def dump(self):
+    def dump(self) -> dict:
         """ Returns the data in the site s """
         return self.data
 
-    def flush(self):
+    def flush(self) -> None:
+        """ Reset a site and it's data storage """
         # Flush data
         data = {var: 10 * var for var in range(2, 21, 2)}
         if self.id % 2 == 0:

@@ -1,13 +1,12 @@
-import math
+
 import re
 from collections import defaultdict
 
 from transaction import Transaction
 from data_manager import DataManager
-
 from global_timer import timer
 
-DEBUG = False
+DEBUG = False   # Verbose flag
 
 
 class TransactionManager:
@@ -30,10 +29,13 @@ class TransactionManager:
         }
 
     def reset(self) -> None:
+        """ Reset data values """
         self.__init__()
 
-    def input_parser(self, file_path: str = "mini_test.txt"):
-        """ Read inputs one by one execute them """
+    def input_parser(self, file_path: str = "mini_test.txt") -> None:
+        """ Read inputs one by one execute them
+        :param file_path: path to test file
+        """
         timer.reset_timer()
         with open(file_path, 'r') as fil:
             for line in fil.readlines():
@@ -68,13 +70,18 @@ class TransactionManager:
                                 print(f"{timer.time}: {tx} - {self.function_mapper[tx].__name__}()")
                             self.function_mapper[tx]()
 
-    def begin_transaction(self, tx):
-        """ Create a Transaction node and add it to the list """
+    def begin_transaction(self, tx: str) -> None:
+        """ Create a Transaction node and add it to the list
+        :param tx: transaction_id
+        """
         transaction = Transaction(tx)
         self.transactions[tx] = transaction
 
-    def begin_ro_transaction(self, tx):
-        """ Create a Read-Only Transaction node and add it to the list """
+    def begin_ro_transaction(self, tx: str) -> bool:
+        """ Create a Read-Only Transaction node and add it to the list
+        :param tx: transaction_id
+        :return: bool to indicate success/ failure
+        """
         transaction = Transaction(tx, RO_flag=True)
         result = transaction.ro_read(dm_handler=self.dm_handler)
         if result:
@@ -83,8 +90,12 @@ class TransactionManager:
         self.wait_queue.append((transaction, self.begin_ro_transaction, [tx], transaction.wait_for_vars))
         return False
 
-    def execute_read_transaction(self, tx, var):
-        """ Execute read transaction tx """
+    def execute_read_transaction(self, tx: str, var: str) -> bool:
+        """ Execute read transaction tx
+        :param tx: transaction_id
+        :param var: variable in context
+        :return: flag to indicate success/ failure
+        """
         if tx not in self.transactions:
             print(f"Transaction {tx} not found")
             return False
@@ -94,22 +105,27 @@ class TransactionManager:
         if self.transactions[tx].RO_flag:
             result = self.transactions[tx].read(sites, var, self.dm_handler)
             if result:
-                self.printer(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
+                print(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
             else:
-                self.printer(f"Error reading at : {tx}: x{var}; Sites: {sites}")
+                print(f"Error reading at : {tx}: x{var}; Sites: {sites}")
         elif self.transactions[tx].request_lock(sites, var, 1, self.dm_handler):
             result = self.transactions[tx].read(sites, var, self.dm_handler)
             if result:
-                self.printer(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
+                print(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
             else:
-                self.printer(f"Error reading at : {tx}: x{var}; Sites: {sites}")
+                print(f"Error reading at : {tx}: x{var}; Sites: {sites}")
         else:
             self.wait_queue.append((self.transactions[tx], self.execute_read_transaction,
                                     [tx, _var], {_var: 1}))
-            self.printer(f"Failed getting read locks at : {tx}: x{var}; Sites: {sites}")
+            print(f"Failed getting read locks at : {tx}: x{var}; Sites: {sites}")
 
-    def execute_write_transaction(self, tx, var, value):
-        """ Execute write transaction tx """
+    def execute_write_transaction(self, tx: str, var: str, value: int) -> bool:
+        """ Execute write transaction tx
+        :param tx: transaction_id
+        :param var: variable in context
+        :param value: value to update for var
+        :return: flag to indicate success/ failure
+        """
         if tx not in self.transactions:
             print(f"Transaction {tx} not found")
             return False
@@ -117,19 +133,22 @@ class TransactionManager:
         var = var[1]
         sites = self.routing(var)
         if self.transactions[tx].request_lock(sites, var, 2, self.dm_handler):
-            self.printer(f"Acquiring Write Lock Successful: {tx}: x{var} - {value}; Sites: {sites}")
+            print(f"Acquiring Write Lock Successful: {tx}: x{var} - {value}; Sites: {sites}")
             result = self.transactions[tx].write(sites, var, value)
             if result:
-                self.printer(f"Write Successful: {tx}: x{var} - {value}; Sites: {sites}")
+                print(f"Write Successful: {tx}: x{var} - {value}; Sites: {sites}")
             else:
-                self.printer(f"Error writing at: {tx}: x{var} - {value}; Sites: {sites}")
+                print(f"Error writing at: {tx}: x{var} - {value}; Sites: {sites}")
         else:
             self.wait_queue.append((self.transactions[tx], self.execute_write_transaction,
                                     [tx, _var, value], {_var: 2}))
-            self.printer(f"Failed getting write locks at : {tx}: x{var} - {value}; Sites: {sites}")
+            print(f"Failed getting write locks at : {tx}: x{var} - {value}; Sites: {sites}")
 
-    def end_transaction(self, tx):
-        """" Commit - if any, and delete tx from list """
+    def end_transaction(self, tx: str) -> bool:
+        """" Validate and commit - if any, and delete tx from list
+        :param tx: transaction_id
+        :return: flag to indicate success/ failure
+        """
         if tx not in self.transactions:
             print(f"Transaction {tx} not found")
             return False
@@ -137,13 +156,21 @@ class TransactionManager:
         self.transactions[tx].release_lock(self.dm_handler)
         if not flag:
             self.abort_transaction(tx)
+        del self.transactions[tx]
+        return True
 
-    def abort_transaction(self, tx):
+    def abort_transaction(self, tx: str) -> None:
+        """ Abort transaction tx
+        :param tx: transaction_id
+        """
         self.transactions[tx].abort(self.dm_handler)
         del self.transactions[tx]
 
-    def routing(self, var):
-        """ Find the site to work with for T """
+    def routing(self, var: str) -> list:
+        """ Find the site to route execution of T
+        :param var: variable in context
+        :return: [sites_avialable]
+        """
         var = int(var)
         if var % 2 == 1:
             sites = [1 + var % 10]
@@ -151,10 +178,8 @@ class TransactionManager:
             sites = [site.id for site in self.dm_handler.up_sites]
         return sites
 
-    def deadlock_cycle(self):
-        """ Somehow check for a deadlock - maybe DFS on graph """
-        # TODO: Maybe store lock data in TM as well?
-
+    def deadlock_cycle(self) -> None:
+        """ Create a tree from wait_queue and run DFS to find a cycle - Aborts youngest tx """
         conflicts = defaultdict(set)
         for i in range(len(self.wait_queue)):
             i_locks = self.wait_queue[i][3]
@@ -167,6 +192,7 @@ class TransactionManager:
                     if i_locks[var] == 2 or j_locks[var] == 2:
                         conflicts[i].add(j)
         path = self.dfs_handler(conflicts)
+
         if path:
             min_index, min_time = None, -1
             for tx in path:
@@ -179,7 +205,11 @@ class TransactionManager:
                 self.abort_transaction(self.wait_queue[min_index][0].id)
                 del self.wait_queue[min_index]
 
-    def dfs_handler(self, adj):
+    def dfs_handler(self, adj: dict) -> list | bool:
+        """ DFS for deadlock_cycle
+        :param adj: {parent: [children]}
+        :return: path | cycle_flag
+        """
         visited = defaultdict(int)
 
         def dfs(x):
@@ -206,24 +236,23 @@ class TransactionManager:
                 return path
         return False
 
-    def fail(self, site):
-        """ Simulate failure in site S """
+    def fail(self, site: str) -> None:
+        """ Simulate failure in site S
+        :param site: site to simulate failure
+        """
         self.dm_handler.handle_failure(int(site))
 
-    def recover(self, site):
-        """ recover site S from failure """
+    def recover(self, site: str) -> None:
+        """ Recover site S from failure
+        :param site: site to simulate recovery
+        """
         self.dm_handler.handle_recovery(int(site))
 
-    def printer(self, message):
-        """ Print whatever you want """
-        # TODO: Generalize this as a Logger
-        print(message)
-
-    def dump(self):
+    def dump(self) -> None:
         """ Get all variables from all sites and dump """
         dump_data = self.dm_handler.dump()
         for site, var_val in sorted(dump_data.items(), key=lambda x: x[0]):
-            self.printer(f"Site {site}: {', '.join([f'{var}: {val}' for var, val in var_val.items()])}")
+            print(f"Site {site}: {', '.join([f'{var}: {val}' for var, val in var_val.items()])}")
 
 
 if __name__ == "__main__":

@@ -14,8 +14,13 @@ class Transaction:
         self.start_time = timer.time
         self.sites_accessed = []  # Compare these with time of commit - if anything fails, abort
 
-    def read(self, sites, var, dm_handler):
-        """ Read from site s """
+    def read(self, sites: list, var: str, dm_handler) -> dict:
+        """ Read from site s
+        :param sites: [sites_to_read_from]
+        :param var: variable in context
+        :param dm_handler: DataManager handler
+        :return: read data {var: value}
+        """
         if self.RO_flag:
             return {var: self.data[var]}
         result, updated_site = dm_handler.read(sites, var)
@@ -28,10 +33,13 @@ class Transaction:
                 self.data[var] = [result[var], {updated_site[0]: timer.time}]
         return result
 
-    def ro_read(self, dm_handler):
-        """ Init Read-Only Transaction - fetch all current values """
+    def ro_read(self, dm_handler) -> bool:
+        """ Init Read-Only Transaction - fetch all current values
+        :param dm_handler: DM Handler
+        :return: bool
+        """
         if self.RO_flag:
-            flag, result = dm_handler.get_ro_cache()
+            flag, result = dm_handler.get_ro_cache
             if flag:
                 self.data = result
                 return True
@@ -40,10 +48,16 @@ class Transaction:
                 print(f"Cannot initiate Transaction {self.id} in RO mode - no sites available")
         return False
 
-    def write(self, sites, var, value):
-        """ Write/ Save x in transaction T - THIS DOES NOT COMMIT """
+    def write(self, sites: list, var: str, value: int) -> bool:
+        """ Write/ Save x in transaction T - THIS DOES NOT COMMIT
+        :param sites: [sites_to_read_from]
+        :param var: variable in context
+        :param value: integer value to update var
+        :return: bool
+        """
         if self.RO_flag:  # Cannot commit on RO locks
             print(f"Transaction: {self.id} is in Read-Only mode. Failed to write: {var}: {value}")
+            return False
         if var in self.write_data:
             for site in sites:
                 if site not in self.write_data[var][1]:
@@ -56,8 +70,17 @@ class Transaction:
             self.write_data[var] = self.data[var]
         return True
 
-    def request_lock(self, sites, var, lock_type, dm_handler):
-        """ Request for a new lock """
+    def request_lock(self, sites: list, var: str, lock_type: int, dm_handler) -> bool:
+        """ Request for a new lock
+        :param sites: [sites_to_read_from]
+        :param var: variable in context
+        :param lock_type: integer value of lock
+                        0: No lock
+                        1: Read Lock
+                        2: Write Lock
+        :param dm_handler: DM Handler
+        :return: bool
+        """
         if lock_type == 1:
             valid_status = [0, 1]
         else:
@@ -72,16 +95,21 @@ class Transaction:
             return False
         return True
 
-    def release_lock(self, dm_handler):
-        """ Release locks on end """
+    def release_lock(self, dm_handler) -> None:
+        """ Release locks on end
+        :param dm_handler: DM Handler
+        """
         for var in self.locks.keys():
             sites = [x for x in dict(self.locks[var]).keys() if x in dm_handler.up_sites]
             locks = dm_handler.set_lock(sites, var, 0, None)
             print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
         self.locks = {}
 
-    def commit(self, dm_handler):
-        """ Validate and commit all updated variables into all up_sites """
+    def commit(self, dm_handler) -> bool:
+        """ Validate and commit all updated variables into all up_sites
+        :param dm_handler: DM Handler
+        :return: success/ failure
+        """
         if self.RO_flag:
             return True
 
@@ -90,7 +118,9 @@ class Transaction:
             print(f"Aborting Transaction {self.id}")
         return result
 
-    def abort(self, dm_handler):
-        """ Release locks and abort T """
+    def abort(self, dm_handler) -> None:
+        """ Release locks and abort T
+        :param dm_handler: DM Handler
+        """
         self.data = {}
         self.release_lock(dm_handler=dm_handler)
