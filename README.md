@@ -8,8 +8,8 @@ Multi-version read concurrency, lock management, site failure/ recovery and dead
 
 ## Team Members
 ```angular2html
-Deep Mehta: dnm7500
-Sarvani Nadiminty: sn2884@nyu.edu
+Deep Mehta: dnm7500 -> Execute Transactions (R/W/C/A), Available Copies, Replication, Deadlock
+Sarvani Nadiminty: sn2884@nyu.edu -> Lock Management, Validate Transactions, Failure, Recovery 
 ```
 
 ## Design Flow

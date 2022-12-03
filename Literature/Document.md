@@ -3,8 +3,8 @@ Replicated Concurrency Control and Recovery
 
 ## Team Members
 ```angular2html
-Deep Mehta: dnm7500
-Sarvani Nadimnity: sn2884@nyu.edu
+Deep Mehta: dnm7500 -> Execute Transactions (R/W/C/A), Available Copies, Replication, Deadlock
+Sarvani Nadiminty: sn2884@nyu.edu -> Lock Management, Validate Executions, Failure, Recovery 
 ```
 
 ## Design Flow
