@@ -15,7 +15,7 @@ class Transaction:
 
         print(f"Began transaction {self.id}")
 
-    def read(self, sites: list, var: str, dm_handler) -> dict:
+    def read(self, sites: list, var: str, dm_handler) -> tuple[dict, list]:
         """ Read from site s
         :param sites: [sites_to_read_from]
         :param var: variable in context
@@ -23,7 +23,7 @@ class Transaction:
         :return: read data {var: value}
         """
         if self.RO_flag:
-            return {var: self.data[var]}
+            return {var: self.data[var]}, []
         result, updated_site = dm_handler.read(sites, var)
         if result:
             if var in self.data:
@@ -32,7 +32,7 @@ class Transaction:
                 self.data[var][0] = result[var]
             else:
                 self.data[var] = [result[var], {updated_site[0]: timer.time}]
-        return result
+        return result, updated_site
 
     def ro_read(self, dm_handler) -> bool:
         """ Init Read-Only Transaction - fetch all current values
