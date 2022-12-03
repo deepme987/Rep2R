@@ -4,7 +4,7 @@ import re
 from collections import defaultdict
 
 from transaction import Transaction
-from data_manager import DataManager
+from tm_helper import TMHelper
 from global_timer import timer
 
 DEBUG = False   # Verbose flag
@@ -14,7 +14,7 @@ class TransactionManager:
     def __init__(self):
         self.transactions = {}  # T1, T2
         self.wait_queue = []  # (Tx, function, args, wait_for_vars)
-        self.dm_handler = DataManager()
+        self.dm_handler = TMHelper()
 
         self.dm_handler.flush_sites()
 
@@ -197,15 +197,18 @@ class TransactionManager:
 
         if path:
             min_index, min_time = None, -1
+            print(path)
             for tx in path:
-                if min_time < self.wait_queue[tx][0].start_time:
-                    min_time = self.wait_queue[tx][0].start_time
+                if min_time < self.transactions[tx].start_time:
+                    min_time = self.transactions[tx].start_time
                     min_index = tx
             if min_index is not None:
-                print(f"DEADLOCK FOUND: {[self.wait_queue[i][0].id for i in path]}; "
-                      f"Aborting transaction: {self.wait_queue[min_index][0].id}")
-                self.abort_transaction(self.wait_queue[min_index][0].id)
-                del self.wait_queue[min_index]
+                print(f"DEADLOCK FOUND: {[self.transactions[i].id for i in path]}; "
+                      f"Aborting transaction: {self.transactions[min_index].id}")
+                self.abort_transaction(self.transactions[min_index].id)
+                for tx in self.wait_queue:
+                    if tx[0].id == self.transactions[min_index].id:
+                        self.wait_queue.remove(tx)
 
     def dfs_handler(self, adj: dict) -> list | bool:
         """ DFS for deadlock_cycle
