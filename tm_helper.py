@@ -1,4 +1,4 @@
-# from __future__ import annotations
+#from __future__ import annotations
 
 from data_manager import DataManager
 from global_timer import timer
@@ -12,7 +12,7 @@ class TMHelper:
         self.sites.extend([DataManager(i) for i in range(1, 11)])
         self.up_sites = self.sites[1:]
         self.locks = {}  # store all locks on all vars in all sites
-        # self.site_status = {site:("up",-1) for site in self.up_sites}
+        self.site_status = {}
         self.RO_sites = {}  # dictionary of sites to lookup for RO data
 
         for var in range(2, 21, 2):
@@ -78,6 +78,7 @@ class TMHelper:
             if site in self.up_sites:
                 self.sites[site].write_data(var, value)
                 self.RO_sites[var].add(site)
+                self.site_status[site][var]="up"
 
     @property
     def get_ro_cache(self) -> tuple[bool, dict | list]:
@@ -112,16 +113,20 @@ class TMHelper:
         :param tx_id: transaction id
         :return: acquired locks {site: {var: (lock_status, transaction_id)}}
         """
+        acquired_lock = False
         for s in sites:
             if s in self.up_sites:
                 if lock_type == 1:
-                    if self.locks[s][var][1]:
-                        self.locks[s][var][1].append(tx_id)
-                        self.locks[s][var] = (lock_type, self.locks[s][var][1])
-                    else:
-                        self.locks[s][var] = (lock_type, [tx_id])
+                    if self.site_status[s][var]=="up":
+                        if self.locks[s][var][1]:
+                            self.locks[s][var][1].append(tx_id)
+                            self.locks[s][var] = (lock_type, self.locks[s][var][1])
+                        else:
+                            self.locks[s][var] = (lock_type, [tx_id])
+                        acquired_lock = True
                 elif lock_type == 2:
                     self.locks[s][var] = (lock_type, [tx_id])
+                    acquired_lock = True
                 elif lock_type == 0:
                     if self.locks[s][var][1]:
                         self.locks[s][var][1].remove(tx_id)
@@ -129,15 +134,16 @@ class TMHelper:
                             self.locks[s][var] = (lock_type, self.locks[s][var][1])
                     else:
                         self.locks[s][var] = (lock_type, [])
-        return self.locks
+                    acquired_lock = True
+        return self.locks,acquired_lock
 
     def read_lock_status(self, var: str) -> tuple[int, str]:
         """ Return lock status
         :param var: variable to check lock on
         :return: lock_status, transaction_id
         """
-        max_lock = 0
-        txn = ""
+        max_lock = -1
+        txn = []
         for x in self.locks:
             if x in self.up_sites and var in self.locks[x].keys():
                 if self.locks[x][var][0] > max_lock:
@@ -162,7 +168,11 @@ class TMHelper:
                 self.RO_sites[var].remove(site)
         # Make all the locks for the site unlockable
         for var in self.locks[site]:
-            self.locks[site][var] = (0, [])
+            self.locks[site][var] = (-1, [])
+
+        for var in self.site_status[site]:
+            self.site_status[site][var] = "down"
+
         # Implement site related failure
         self.sites[site].failure()
 
@@ -181,6 +191,10 @@ class TMHelper:
         # Make all the locks for the site lockable
         for var in self.locks[site]:
             self.locks[site][var] = (0, [])
+        # update variable status in recovered site
+        for var in self.site_status[site]:
+            if int(var) % 2 == 1:
+                self.site_status[site][var] = "up"
         self.sites[site].recovery()
 
     def dump(self) -> dict:
@@ -202,4 +216,10 @@ class TMHelper:
         for site in range(1, 11):
             odd_unreplicated_var = {str(v): (0, []) for v in range(1, 21, 2) if site == 1 + v % 10}
             self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
+
+        #Flush site status for all sites
+        even_rep_var_site = {str(v): "up" for v in range(2, 21, 2)}
+        for site in range(1, 11):
+            odd_rep_var_site = {str(v): "up" for v in range(1, 21, 2) if site == 1 + v % 10}
+            self.site_status[site]= {**even_rep_var_site, **odd_rep_var_site}
         return True

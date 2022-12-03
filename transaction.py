@@ -90,8 +90,11 @@ class Transaction:
         lock_status = dm_handler.read_lock_status(var)
         if lock_status[0] in valid_status or (
                 lock_status[1] and self.id in lock_status[1] and len(lock_status[1]) == 1):
-            locks = dm_handler.set_lock(sites, var, lock_type, self.id)
-            self.locks[var] = {s: locks[s][var] for s in sites}
+            locks,lock_successful = dm_handler.set_lock(sites, var, lock_type, self.id)
+            if lock_successful:
+                self.locks[var] = {s: locks[s][var] for s in sites}
+            else:
+                return False
         else:
             return False
         return True
@@ -102,7 +105,7 @@ class Transaction:
         """
         for var in self.locks.keys():
             sites = [x for x in dict(self.locks[var]).keys() if x in dm_handler.up_sites]
-            locks = dm_handler.set_lock(sites, var, 0, self.id)
+            locks,lock_successful = dm_handler.set_lock(sites, var, 0, self.id)
             print(f"{timer.time}: Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
         self.locks = {}
 

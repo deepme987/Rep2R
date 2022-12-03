@@ -1,4 +1,4 @@
-# from __future__ import annotations
+#from __future__ import annotations
 
 import os
 import json
@@ -51,9 +51,6 @@ class DataManager:
         self.status = 0
         for var in self.var_status:
             self.var_status[var] = "down"
-        for var in range(2, 21, 2):
-            if (var % 2 == 0) and str(var) in self.data:
-                self.data.pop(str(var))
 
     def recovery(self) -> None:
         """ Recover a site from failure """
