@@ -114,7 +114,7 @@ class Transaction:
         :param site: site id
         """
         for var in self.data.keys():
-            if site in self.locks[var].keys():
+            if var in self.locks.keys() and site in self.locks[var].keys():
                 # self.locks[var][site] = (0, [])
                 self.locks[var].pop(site)
 
