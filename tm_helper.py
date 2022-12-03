@@ -8,7 +8,7 @@ from typing import Union, Tuple, Dict, Any, List
 
 class TMHelper:
     def __init__(self):
-        self.sites = [None]  # filler for 0 index (NOTE: use self.sites[1:] for enumerator
+        self.sites = [None]  # filler for 0 index (NOTE: use self.sites[1:] for enumerator)
         self.sites.extend([DataManager(i) for i in range(1, 11)])
         self.up_sites = self.sites[1:]
         self.locks = {}  # store all locks on all vars in all sites
