@@ -66,6 +66,8 @@ class TMHelper:
         sites = []        # [S1, S2, ..., S10]
         up_sites = []     # [list_of_available_sites]
         RO_sites = {}     # {var: {S1, S2, ..., Sn}} - valid sites for var
+        locks = {}        # {site1: {'1':(0,[]), '2':(1,['T1']),..., '20':(1,['T1'])},..site10:{}}  - locks for all variables at all sites
+        site_status = {}  # {site1: {'1':"up",...}} stores the variable status of sites.
         last_failure = {} # {S1: 4}
     
     def read(self, var, sites): ...
@@ -138,8 +140,8 @@ class DataManager:
     def __init__(self):
         id = id     # S1 -> 1
         data = {}   # Currently stored data (used for read)
-        locks = {}  # Locks on all vars
         status = 1  # Up/ Down
+        var_status = {} # stores variable status if available for read/write 
 
     def read_data(self, var): ...
         # Return value if valid
@@ -149,9 +151,10 @@ class DataManager:
 
     def failure(self): ...
         # set status = 0
+        # update var_status for all variables
         # Flush all variables
 
     def recovery(self): ...
         # set status = 1
-        # Recover un-replicated variables
+        # Recover un-replicated variables - update var_status
 ```
