@@ -35,7 +35,7 @@ class TMHelper:
                 print(f"Skipping Read; Site {site} is down")
                 continue
             if not ro_flag and var in self.locks[site].keys() \
-                    and self.locks[site][var][0] != 1:  # should txn id be verified?
+                    and self.locks[site][var][0] != 1:
                 continue
             data = self.sites[site].read_data(var)
             if data:
