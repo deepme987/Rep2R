@@ -9,7 +9,7 @@ Multi-version read concurrency, lock management, site failure/ recovery and dead
 ## Team Members
 ```angular2html
 Deep Mehta: dnm7500
-Sarvani Nadimnity: sn2884@nyu.edu
+Sarvani Nadiminty: sn2884@nyu.edu
 ```
 
 ## Design Flow

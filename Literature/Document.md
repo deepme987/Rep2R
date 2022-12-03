@@ -9,7 +9,7 @@ Sarvani Nadimnity: sn2884@nyu.edu
 
 ## Design Flow
 
-![Design Document](./Literature/Design.png)
+![Design Document](./Design.png)
 
 ## Framework Details
 

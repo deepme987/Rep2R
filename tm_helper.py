@@ -1,4 +1,4 @@
-#from __future__ import annotations
+# from __future__ import annotations
 
 from data_manager import DataManager
 from global_timer import timer
@@ -46,7 +46,7 @@ class TMHelper:
         """ Validate transaction for commit
             Checks with failure sites and available locks
         :param data: data to be committed: {var: (value, {site: first_accessed})}
-        :param validate_data: additional data for validation of read vals
+        :param read_data: additional data for validation of read vals
         :return:
         """
 
@@ -78,7 +78,7 @@ class TMHelper:
             if site in self.up_sites:
                 self.sites[site].write_data(var, value)
                 self.RO_sites[var].add(site)
-                self.site_status[site][var]="up"
+                self.site_status[site][var] = "up"
 
     @property
     def get_ro_cache(self) -> tuple[bool, dict | list]:
@@ -100,8 +100,8 @@ class TMHelper:
         else:
             return False, locked_vars
 
-    def set_lock(self, sites: list, var: str, lock_type: int, tx_id: str) -> dict:
-        """" Update lock status on site s for var x
+    def set_lock(self, sites: list, var: str, lock_type: int, tx_id: str) -> tuple[dict, bool]:
+        """ Update lock status on site s for var x
         :param sites: list of sites to request lock from
         :param var: variable in context
         :param lock_type: integer value for lock
@@ -117,7 +117,7 @@ class TMHelper:
         for s in sites:
             if s in self.up_sites:
                 if lock_type == 1:
-                    if self.site_status[s][var]=="up":
+                    if self.site_status[s][var] == "up":
                         if self.locks[s][var][1]:
                             self.locks[s][var][1].append(tx_id)
                             self.locks[s][var] = (lock_type, self.locks[s][var][1])
@@ -135,7 +135,7 @@ class TMHelper:
                     else:
                         self.locks[s][var] = (lock_type, [])
                     acquired_lock = True
-        return self.locks,acquired_lock
+        return self.locks, acquired_lock
 
     def read_lock_status(self, var: str) -> tuple[int, str]:
         """ Return lock status
@@ -217,9 +217,9 @@ class TMHelper:
             odd_unreplicated_var = {str(v): (0, []) for v in range(1, 21, 2) if site == 1 + v % 10}
             self.locks[site] = {**even_replicated_var, **odd_unreplicated_var}
 
-        #Flush site status for all sites
+        # Flush site status for all sites
         even_rep_var_site = {str(v): "up" for v in range(2, 21, 2)}
         for site in range(1, 11):
             odd_rep_var_site = {str(v): "up" for v in range(1, 21, 2) if site == 1 + v % 10}
-            self.site_status[site]= {**even_rep_var_site, **odd_rep_var_site}
+            self.site_status[site] = {**even_rep_var_site, **odd_rep_var_site}
         return True
