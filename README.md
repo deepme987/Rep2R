@@ -31,6 +31,19 @@ pip install reprounzip
 
 ## Running the code
 ```angular2html
+### Steps to run the code directly:
+
+python3 Rep2Rec/transaction_manager.py
+
+The tests file "projectsampletests.deadlockdetection.txt" is inside the Rep2Rec project folder
+Site data is updated in the folder - "Rep2Rec/data/"
+
+### Steps followed to run the code with reprozip
+cd Rep2Rec
+reprozip trace python3 transaction_manager.py
+For packaging the output and the files
+reprozip pack rep_ADB.rpz
+
 ```
 
 ## Sample test input
