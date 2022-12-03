@@ -1,0 +1,788 @@
+1: Began transaction T1
+2: Began transaction T2
+3: Acquiring Write Lock Successful: T1: x1 - 101; Sites: [2]
+3: Write Successful: T1: x1 - 101; Sites: [2]
+4: Acquiring Write Lock Successful: T2: x2 - 202; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+4: Write Successful: T2: x2 - 202; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+5: Failed getting write locks at : T1: x2 - 102; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+5: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,102)
+5: Failed getting write locks at : T1: x2 - 102; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+5: Wait queue traversed, continuing with new input
+6: Failed getting write locks at : T2: x1 - 201; Sites: [2]
+6: DEADLOCK FOUND: ['T1', 'T2']; Aborting transaction: T2
+6: Released locks for Transaction T2 and variables 2 at sites [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+6: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,102)
+6: Acquiring Write Lock Successful: T1: x2 - 102; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+6: Write Successful: T1: x2 - 102; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+6: Wait queue traversed, continuing with new input
+7: Committed Transaction T1
+7: Released locks for Transaction T1 and variables 1 at sites [2] 
+7: Released locks for Transaction T1 and variables 2 at sites [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+8: Dump data
+8: Site 1: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 2: 1: 101, 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 3: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 4: 2: 102, 3: 30, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 5: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 6: 2: 102, 4: 40, 5: 50, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+8: Site 7: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 8: 2: 102, 4: 40, 6: 60, 7: 70, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+8: Site 9: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+8: Site 10: 2: 102, 4: 40, 6: 60, 8: 80, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+8: SKIPPING -=== output of dump
+8: SKIPPING -x1: 101 at site 2
+8: SKIPPING -x2: 102 at all sites
+8: SKIPPING -All other variables have their initial values.
+9: Began transaction T1
+10: Began transaction T2
+11: Acquiring Write Lock Successful: T1: x1 - 101; Sites: [2]
+11: Write Successful: T1: x1 - 101; Sites: [2]
+12: Read Successful: T2: x2 - 102; Sites: []
+13: Acquiring Write Lock Successful: T1: x2 - 102; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+13: Write Successful: T1: x2 - 102; Sites: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+14: Read Successful: T2: x1 - 101; Sites: []
+15: Committed Transaction T1
+15: Released locks for Transaction T1 and variables 1 at sites [2] 
+15: Released locks for Transaction T1 and variables 2 at sites [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+16: Ending RO Transaction T2
+17: Dump data
+17: Site 1: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 2: 1: 101, 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 3: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 4: 2: 102, 3: 30, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 5: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 6: 2: 102, 4: 40, 5: 50, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+17: Site 7: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 8: 2: 102, 4: 40, 6: 60, 7: 70, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+17: Site 9: 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+17: Site 10: 2: 102, 4: 40, 6: 60, 8: 80, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+17: SKIPPING -=== output of dump
+17: SKIPPING -x1: 101 at site 2
+17: SKIPPING -x2: 102 at all sites
+17: SKIPPING -All other variables have their initial values.
+18: Began transaction T1
+19: Began transaction T2
+20: Read Successful: T1: x3 - 30; Sites: [4]
+21: Site fail: 2; data = {'1': 101, '2': 102, '4': 40, '6': 60, '8': 80, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+22: Acquiring Write Lock Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+22: Write Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+23: Read Successful: T2: x3 - 30; Sites: [4]
+24: Acquiring Write Lock Successful: T1: x5 - 91; Sites: [6]
+24: Write Successful: T1: x5 - 91; Sites: [6]
+25: Committed Transaction T2
+25: Released locks for Transaction T2 and variables 8 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+25: Released locks for Transaction T2 and variables 3 at sites [4] 
+26: Site Recovered: 2
+27: Committed Transaction T1
+27: Released locks for Transaction T1 and variables 3 at sites [4] 
+27: Released locks for Transaction T1 and variables 5 at sites [6] 
+28: Dump data
+28: Site 1: 2: 102, 4: 40, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 2: 1: 101, 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 3: 2: 102, 4: 40, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 4: 2: 102, 3: 30, 4: 40, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 5: 2: 102, 4: 40, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 6: 2: 102, 4: 40, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+28: Site 7: 2: 102, 4: 40, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 8: 2: 102, 4: 40, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+28: Site 9: 2: 102, 4: 40, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+28: Site 10: 2: 102, 4: 40, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+29: Began transaction T1
+30: Began transaction T2
+31: Read Successful: T1: x3 - 30; Sites: [4]
+32: Acquiring Write Lock Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+32: Write Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+33: Site fail: 2; data = {'1': 101, '2': 102, '4': 40, '6': 60, '8': 80, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+34: Read Successful: T2: x3 - 30; Sites: [4]
+35: Acquiring Write Lock Successful: T1: x4 - 91; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+35: Write Successful: T1: x4 - 91; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+36: Site Recovered: 2
+37: Aborting Transaction T2
+37: Released locks for Transaction T2 and variables 8 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+37: Released locks for Transaction T2 and variables 3 at sites [4] 
+38: Committed Transaction T1
+38: Released locks for Transaction T1 and variables 3 at sites [4] 
+38: Released locks for Transaction T1 and variables 4 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+39: Dump data
+39: Site 1: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 2: 1: 101, 2: 102, 4: 40, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 3: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 4: 2: 102, 3: 30, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 5: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 6: 2: 102, 4: 91, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+39: Site 7: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 8: 2: 102, 4: 91, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+39: Site 9: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+39: Site 10: 2: 102, 4: 91, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+40: Began transaction T1
+41: Began transaction T2
+42: Read Successful: T1: x3 - 30; Sites: [4]
+43: Acquiring Write Lock Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+43: Write Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+44: Site fail: 2; data = {'1': 101, '2': 102, '4': 40, '6': 60, '8': 80, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+45: Read Successful: T2: x3 - 30; Sites: [4]
+46: Site Recovered: 2
+47: Acquiring Write Lock Successful: T1: x4 - 91; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+47: Write Successful: T1: x4 - 91; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+48: Aborting Transaction T2
+48: Released locks for Transaction T2 and variables 8 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+48: Released locks for Transaction T2 and variables 3 at sites [4] 
+49: Committed Transaction T1
+49: Released locks for Transaction T1 and variables 3 at sites [4] 
+49: Released locks for Transaction T1 and variables 4 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10, 2] 
+50: Dump data
+50: Site 1: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 2: 1: 101, 2: 102, 4: 91, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 3: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 4: 2: 102, 3: 30, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 5: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 6: 2: 102, 4: 91, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+50: Site 7: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 8: 2: 102, 4: 91, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+50: Site 9: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+50: Site 10: 2: 102, 4: 91, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+51: Began transaction T1
+52: Began transaction T2
+53: Read Successful: T1: x1 - 101; Sites: [2]
+54: Site fail: 2; data = {'1': 101, '2': 102, '4': 91, '6': 60, '8': 80, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+55: Acquiring Write Lock Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+55: Write Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+56: Read Successful: T2: x3 - 30; Sites: [4]
+57: Read Successful: T1: x5 - 91; Sites: [6]
+58: Committed Transaction T2
+58: Released locks for Transaction T2 and variables 8 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+58: Released locks for Transaction T2 and variables 3 at sites [4] 
+59: Site Recovered: 2
+60: Aborting Transaction T1
+60: Released locks for Transaction T1 and variables 1 at sites [] 
+60: Released locks for Transaction T1 and variables 5 at sites [6] 
+61: Dump data
+61: Site 1: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 2: 1: 101, 2: 102, 4: 91, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 3: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 4: 2: 102, 3: 30, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 5: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 6: 2: 102, 4: 91, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+61: Site 7: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 8: 2: 102, 4: 91, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+61: Site 9: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+61: Site 10: 2: 102, 4: 91, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+62: Began transaction T1
+63: Began transaction T2
+64: Acquiring Write Lock Successful: T1: x6 - 66; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+64: Write Successful: T1: x6 - 66; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10, 2]
+65: Site fail: 2; data = {'1': 101, '2': 102, '4': 91, '6': 60, '8': 80, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+66: Acquiring Write Lock Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+66: Write Successful: T2: x8 - 88; Sites: [1, 3, 4, 5, 6, 7, 8, 9, 10]
+67: Read Successful: T2: x3 - 30; Sites: [4]
+68: Read Successful: T1: x5 - 91; Sites: [6]
+69: Committed Transaction T2
+69: Released locks for Transaction T2 and variables 8 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+69: Released locks for Transaction T2 and variables 3 at sites [4] 
+70: Site Recovered: 2
+71: Aborting Transaction T1
+71: Released locks for Transaction T1 and variables 6 at sites [1, 3, 4, 5, 6, 7, 8, 9, 10] 
+71: Released locks for Transaction T1 and variables 5 at sites [6] 
+72: Dump data
+72: Site 1: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 2: 1: 101, 2: 102, 4: 91, 6: 60, 8: 80, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 3: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 4: 2: 102, 3: 30, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 5: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 6: 2: 102, 4: 91, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+72: Site 7: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 8: 2: 102, 4: 91, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+72: Site 9: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+72: Site 10: 2: 102, 4: 91, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+73: Began transaction T1
+74: Began transaction T2
+75: Site fail: 3; data = {'2': 102, '4': 91, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+76: Site fail: 4; data = {'2': 102, '3': 30, '4': 91, '6': 60, '8': 88, '10': 100, '12': 120, '13': 130, '14': 140, '16': 160, '18': 180, '20': 200}
+77: Read Successful: T1: x1 - 101; Sites: [2]
+78: Acquiring Write Lock Successful: T2: x8 - 88; Sites: [1, 5, 6, 7, 8, 9, 10, 2]
+78: Write Successful: T2: x8 - 88; Sites: [1, 5, 6, 7, 8, 9, 10, 2]
+79: Committed Transaction T1
+79: Released locks for Transaction T1 and variables 1 at sites [2] 
+80: Site Recovered: 4
+81: Site Recovered: 3
+82: Read Successful: T2: x3 - 30; Sites: [4]
+83: Committed Transaction T2
+83: Released locks for Transaction T2 and variables 8 at sites [1, 5, 6, 7, 8, 9, 10, 2] 
+83: Released locks for Transaction T2 and variables 3 at sites [4] 
+84: Dump data
+84: Site 1: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 2: 1: 101, 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 3: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 4: 2: 102, 3: 30, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 5: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 6: 2: 102, 4: 91, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+84: Site 7: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 8: 2: 102, 4: 91, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+84: Site 9: 2: 102, 4: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+84: Site 10: 2: 102, 4: 91, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+85: Began transaction T1
+86: Began transaction T2
+87: Read Successful: T2: x1 - 101; Sites: []
+88: Read Successful: T2: x2 - 102; Sites: []
+89: Acquiring Write Lock Successful: T1: x3 - 33; Sites: [4]
+89: Write Successful: T1: x3 - 33; Sites: [4]
+90: Committed Transaction T1
+90: Released locks for Transaction T1 and variables 3 at sites [4] 
+91: Read Successful: T2: x3 - 30; Sites: []
+92: Ending RO Transaction T2
+93: Began transaction T1
+94: Began transaction T2
+95: Read Successful: T2: x1 - 101; Sites: []
+96: Read Successful: T2: x2 - 102; Sites: []
+97: Acquiring Write Lock Successful: T1: x3 - 33; Sites: [4]
+97: Write Successful: T1: x3 - 33; Sites: [4]
+98: Committed Transaction T1
+98: Released locks for Transaction T1 and variables 3 at sites [4] 
+99: Began transaction T3
+100: Read Successful: T3: x3 - 33; Sites: []
+101: Read Successful: T2: x3 - 33; Sites: []
+102: Ending RO Transaction T2
+103: Ending RO Transaction T3
+104: Began transaction T3
+105: Began transaction T1
+106: Began transaction T2
+107: Acquiring Write Lock Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+107: Write Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+108: Acquiring Write Lock Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+108: Write Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+109: Failed getting read locks at : T3: x4; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+109: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x4)
+109: Failed getting read locks at : T3: x4; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+109: Wait queue traversed, continuing with new input
+110: Committed Transaction T2
+110: Released locks for Transaction T2 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+110: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x4)
+110: Read Successful: T3: x4 - 44; Sites: [1]
+110: Wait queue traversed, continuing with new input
+111: Committed Transaction T3
+111: Released locks for Transaction T3 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+111: Released locks for Transaction T3 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+112: Read Successful: T1: x2 - 22; Sites: [1]
+113: Committed Transaction T1
+113: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+114: Began transaction T1
+115: Began transaction T2
+116: Began transaction T3
+117: Acquiring Write Lock Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+117: Write Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+118: Acquiring Write Lock Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+118: Write Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+119: Failed getting read locks at : T3: x4; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+119: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x4)
+119: Failed getting read locks at : T3: x4; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+119: Wait queue traversed, continuing with new input
+120: Committed Transaction T2
+120: Released locks for Transaction T2 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+120: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x4)
+120: Read Successful: T3: x4 - 44; Sites: [1]
+120: Wait queue traversed, continuing with new input
+121: Committed Transaction T3
+121: Released locks for Transaction T3 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+121: Released locks for Transaction T3 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+122: Read Successful: T1: x2 - 22; Sites: [1]
+123: Committed Transaction T1
+123: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+124: Began transaction T1
+125: Began transaction T2
+126: Read Successful: T1: x2 - 22; Sites: [1]
+127: Read Successful: T2: x2 - 22; Sites: [1]
+128: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+128: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+128: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+128: Wait queue traversed, continuing with new input
+129: Committed Transaction T1
+129: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+129: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+129: Acquiring Write Lock Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+129: Write Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+129: Wait queue traversed, continuing with new input
+130: Committed Transaction T2
+130: Released locks for Transaction T2 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+131: Began transaction T1
+132: Began transaction T2
+133: Read Successful: T1: x2 - 10; Sites: [1]
+134: Read Successful: T2: x2 - 10; Sites: [1]
+135: Committed Transaction T1
+135: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+136: Acquiring Write Lock Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+136: Write Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+137: Committed Transaction T2
+137: Released locks for Transaction T2 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+138: Began transaction T1
+139: Began transaction T2
+140: Began transaction T3
+141: Acquiring Write Lock Successful: T3: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+141: Write Successful: T3: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+142: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+142: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+142: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+142: Wait queue traversed, continuing with new input
+143: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+143: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+143: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+143: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+143: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+143: Wait queue traversed, continuing with new input
+144: Committed Transaction T3
+144: Released locks for Transaction T3 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+144: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+144: Acquiring Write Lock Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+144: Write Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+144: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+144: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+144: Wait queue traversed, continuing with new input
+145: Committed Transaction T2
+145: Released locks for Transaction T2 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+145: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+145: Acquiring Write Lock Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+145: Write Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+145: Wait queue traversed, continuing with new input
+146: Committed Transaction T1
+146: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+147: Began transaction T1
+148: Began transaction T2
+149: Began transaction T3
+150: Acquiring Write Lock Successful: T3: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+150: Write Successful: T3: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+151: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+151: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+151: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+151: Wait queue traversed, continuing with new input
+152: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+152: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+152: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+152: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+152: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+152: Wait queue traversed, continuing with new input
+153: Committed Transaction T3
+153: Released locks for Transaction T3 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+153: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+153: Acquiring Write Lock Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+153: Write Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+153: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+153: Failed getting write locks at : T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+153: Wait queue traversed, continuing with new input
+154: Committed Transaction T1
+154: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+154: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x2,10)
+154: Acquiring Write Lock Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+154: Write Successful: T2: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+154: Wait queue traversed, continuing with new input
+155: Committed Transaction T2
+155: Released locks for Transaction T2 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 2, 4, 3] 
+156: Began transaction T5
+157: Began transaction T4
+158: Began transaction T3
+159: Began transaction T2
+160: Began transaction T1
+161: Acquiring Write Lock Successful: T1: x4 - 5; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+161: Write Successful: T1: x4 - 5; Sites: [1, 5, 6, 7, 8, 9, 10, 2, 4, 3]
+162: Site fail: 2; data = {'1': 101, '2': 10, '4': 44, '6': 60, '8': 88, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+163: Failed getting write locks at : T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3]
+163: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x4,44)
+163: Failed getting write locks at : T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3]
+163: Wait queue traversed, continuing with new input
+164: Site Recovered: 2
+164: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x4,44)
+164: Failed getting write locks at : T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+164: Wait queue traversed, continuing with new input
+165: Failed getting write locks at : T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+165: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x4,44)
+165: Failed getting write locks at : T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+165: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,55)
+165: Failed getting write locks at : T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+165: Wait queue traversed, continuing with new input
+166: Failed getting write locks at : T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+166: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x4,44)
+166: Failed getting write locks at : T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+166: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,55)
+166: Failed getting write locks at : T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+166: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x4,66)
+166: Failed getting write locks at : T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+166: Wait queue traversed, continuing with new input
+167: Failed getting write locks at : T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+167: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x4,44)
+167: Failed getting write locks at : T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+167: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,55)
+167: Failed getting write locks at : T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+167: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x4,66)
+167: Failed getting write locks at : T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+167: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x4,77)
+167: Failed getting write locks at : T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+167: Wait queue traversed, continuing with new input
+168: Aborting Transaction T1
+168: Released locks for Transaction T1 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3] 
+168: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x4,44)
+168: Acquiring Write Lock Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+168: Write Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+168: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,55)
+168: Failed getting write locks at : T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+168: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x4,66)
+168: Failed getting write locks at : T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+168: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x4,77)
+168: Failed getting write locks at : T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+168: Wait queue traversed, continuing with new input
+169: Committed Transaction T2
+169: Released locks for Transaction T2 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+169: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,55)
+169: Acquiring Write Lock Successful: T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+169: Write Successful: T3: x4 - 55; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+169: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x4,66)
+169: Failed getting write locks at : T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+169: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x4,77)
+169: Failed getting write locks at : T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+169: Wait queue traversed, continuing with new input
+170: Committed Transaction T3
+170: Released locks for Transaction T3 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+170: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x4,66)
+170: Acquiring Write Lock Successful: T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+170: Write Successful: T4: x4 - 66; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+170: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x4,77)
+170: Failed getting write locks at : T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+170: Wait queue traversed, continuing with new input
+171: Committed Transaction T4
+171: Released locks for Transaction T4 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+171: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x4,77)
+171: Acquiring Write Lock Successful: T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+171: Write Successful: T5: x4 - 77; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+171: Wait queue traversed, continuing with new input
+172: Committed Transaction T5
+172: Released locks for Transaction T5 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+173: Began transaction T3
+174: Began transaction T1
+175: Began transaction T2
+176: Acquiring Write Lock Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+176: Write Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+177: Acquiring Write Lock Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+177: Write Successful: T2: x4 - 44; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+178: Failed getting read locks at : T3: x4; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+178: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x4)
+178: Failed getting read locks at : T3: x4; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+178: Wait queue traversed, continuing with new input
+179: Committed Transaction T2
+179: Released locks for Transaction T2 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+179: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x4)
+179: Read Successful: T3: x4 - 44; Sites: [1]
+179: Wait queue traversed, continuing with new input
+180: Committed Transaction T3
+180: Released locks for Transaction T3 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+180: Released locks for Transaction T3 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+181: Read Successful: T1: x2 - 22; Sites: [1]
+182: Committed Transaction T1
+182: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 4, 3, 2] 
+183: Began transaction T3
+184: Began transaction T1
+185: Began transaction T2
+186: Acquiring Write Lock Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+186: Write Successful: T3: x2 - 22; Sites: [1, 5, 6, 7, 8, 9, 10, 4, 3, 2]
+187: Acquiring Write Lock Successful: T2: x3 - 44; Sites: [4]
+187: Write Successful: T2: x3 - 44; Sites: [4]
+188: Failed getting read locks at : T3: x3; Sites: [4]
+188: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+188: Failed getting read locks at : T3: x3; Sites: [4]
+188: Wait queue traversed, continuing with new input
+189: Committed Transaction T2
+189: Released locks for Transaction T2 and variables 3 at sites [4] 
+189: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+189: Read Successful: T3: x3 - 44; Sites: [4]
+189: Wait queue traversed, continuing with new input
+190: Site fail: 4; data = {'2': 22, '3': 44, '4': 44, '6': 60, '8': 88, '10': 100, '12': 120, '13': 130, '14': 140, '16': 160, '18': 180, '20': 200}
+191: Aborting Transaction T3
+191: Released locks for Transaction T3 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2] 
+191: Released locks for Transaction T3 and variables 3 at sites [] 
+192: Read Successful: T1: x2 - 22; Sites: [1]
+193: Committed Transaction T1
+193: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2] 
+194: Began transaction T1
+195: Began transaction T2
+196: Began transaction T3
+197: Began transaction T4
+198: Began transaction T5
+199: Failed getting read locks at : T3: x3; Sites: []
+199: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+199: Failed getting read locks at : T3: x3; Sites: []
+199: Wait queue traversed, continuing with new input
+200: Read Successful: T4: x4 - 44; Sites: [1]
+200: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+200: Failed getting read locks at : T3: x3; Sites: []
+200: Wait queue traversed, continuing with new input
+201: Read Successful: T5: x5 - 91; Sites: [6]
+201: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+201: Failed getting read locks at : T3: x3; Sites: []
+201: Wait queue traversed, continuing with new input
+202: Read Successful: T1: x1 - 101; Sites: [2]
+202: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+202: Failed getting read locks at : T3: x3; Sites: []
+202: Wait queue traversed, continuing with new input
+203: Read Successful: T2: x2 - 22; Sites: [1]
+203: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+203: Failed getting read locks at : T3: x3; Sites: []
+203: Wait queue traversed, continuing with new input
+204: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+204: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+204: Failed getting read locks at : T3: x3; Sites: []
+204: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+204: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+204: Wait queue traversed, continuing with new input
+205: Failed getting write locks at : T2: x3 - 20; Sites: []
+205: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+205: Failed getting read locks at : T3: x3; Sites: []
+205: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+205: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+205: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+205: Failed getting write locks at : T2: x3 - 20; Sites: []
+205: Wait queue traversed, continuing with new input
+206: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+206: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+206: Failed getting read locks at : T3: x3; Sites: []
+206: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+206: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+206: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+206: Failed getting write locks at : T2: x3 - 20; Sites: []
+206: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+206: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+206: Wait queue traversed, continuing with new input
+207: Failed getting write locks at : T4: x5 - 40; Sites: [6]
+207: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+207: Failed getting read locks at : T3: x3; Sites: []
+207: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+207: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+207: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+207: Failed getting write locks at : T2: x3 - 20; Sites: []
+207: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+207: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+207: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x5,40)
+207: Failed getting write locks at : T4: x5 - 40; Sites: [6]
+207: Wait queue traversed, continuing with new input
+208: Failed getting write locks at : T5: x1 - 50; Sites: [2]
+208: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+208: Failed getting read locks at : T3: x3; Sites: []
+208: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+208: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+208: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+208: Failed getting write locks at : T2: x3 - 20; Sites: []
+208: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+208: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+208: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x5,40)
+208: Failed getting write locks at : T4: x5 - 40; Sites: [6]
+208: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x1,50)
+208: Failed getting write locks at : T5: x1 - 50; Sites: [2]
+208: Wait queue traversed, continuing with new input
+209: Committed Transaction T4
+209: Released locks for Transaction T4 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2] 
+209: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+209: Failed getting read locks at : T3: x3; Sites: []
+209: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+209: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+209: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+209: Failed getting write locks at : T2: x3 - 20; Sites: []
+209: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+209: Acquiring Write Lock Successful: T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+209: Write Successful: T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+209: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x5,40)
+209: Transaction T4 not found
+209: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x1,50)
+209: Failed getting write locks at : T5: x1 - 50; Sites: [2]
+209: Wait queue traversed, continuing with new input
+210: Committed Transaction T3
+210: Released locks for Transaction T3 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2] 
+210: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+210: Transaction T3 not found
+210: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+210: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+210: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+210: Failed getting write locks at : T2: x3 - 20; Sites: []
+210: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x1,50)
+210: Failed getting write locks at : T5: x1 - 50; Sites: [2]
+210: Wait queue traversed, continuing with new input
+211: Committed Transaction T2
+211: Released locks for Transaction T2 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2] 
+211: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+211: Acquiring Write Lock Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+211: Write Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2]
+211: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+211: Transaction T2 not found
+211: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x1,50)
+211: Failed getting write locks at : T5: x1 - 50; Sites: [2]
+211: Wait queue traversed, continuing with new input
+212: Committed Transaction T1
+212: Released locks for Transaction T1 and variables 1 at sites [2] 
+212: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2] 
+212: Attempting transaction from wait queue: T5 - execute_write_transaction(T5,x1,50)
+212: Acquiring Write Lock Successful: T5: x1 - 50; Sites: [2]
+212: Write Successful: T5: x1 - 50; Sites: [2]
+212: Wait queue traversed, continuing with new input
+213: Began transaction T1
+214: Began transaction T2
+215: Began transaction T3
+216: Began transaction T4
+217: Began transaction T5
+218: Failed getting read locks at : T3: x3; Sites: []
+218: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+218: Failed getting read locks at : T3: x3; Sites: []
+218: Wait queue traversed, continuing with new input
+219: Site fail: 4; data = {'2': 22, '3': 44, '4': 44, '6': 60, '8': 88, '10': 100, '12': 120, '13': 130, '14': 140, '16': 160, '18': 180, '20': 200}
+219: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+219: Failed getting read locks at : T3: x3; Sites: []
+219: Wait queue traversed, continuing with new input
+220: Site Recovered: 4
+220: Attempting transaction from wait queue: T3 - execute_read_transaction(T3,x3)
+220: Read Successful: T3: x3 - 44; Sites: [4]
+220: Wait queue traversed, continuing with new input
+221: Read Successful: T4: x4 - 30; Sites: [1]
+222: Read Successful: T5: x5 - 91; Sites: [6]
+223: Read Successful: T1: x6 - 60; Sites: [1]
+224: Read Successful: T2: x2 - 10; Sites: [1]
+225: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+225: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+225: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+225: Wait queue traversed, continuing with new input
+226: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+226: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+226: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+226: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+226: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+226: Wait queue traversed, continuing with new input
+227: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+227: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+227: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+227: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+227: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+227: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+227: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+227: Wait queue traversed, continuing with new input
+228: Acquiring Write Lock Successful: T5: x1 - 50; Sites: [2]
+228: Write Successful: T5: x1 - 50; Sites: [2]
+228: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+228: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+228: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+228: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+228: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+228: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+228: Wait queue traversed, continuing with new input
+229: Committed Transaction T5
+229: Released locks for Transaction T5 and variables 5 at sites [6] 
+229: Released locks for Transaction T5 and variables 1 at sites [2] 
+229: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+229: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+229: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+229: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+229: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+229: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+229: Wait queue traversed, continuing with new input
+230: Failed getting write locks at : T4: x5 - 40; Sites: [6]
+230: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+230: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+230: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+230: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+230: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+230: Failed getting write locks at : T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+230: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x5,40)
+230: Failed getting write locks at : T4: x5 - 40; Sites: [6]
+230: Wait queue traversed, continuing with new input
+231: Committed Transaction T4
+231: Released locks for Transaction T4 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2, 4] 
+231: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+231: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+231: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+231: Failed getting write locks at : T2: x3 - 20; Sites: [4]
+231: Attempting transaction from wait queue: T3 - execute_write_transaction(T3,x4,30)
+231: Acquiring Write Lock Successful: T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+231: Write Successful: T3: x4 - 30; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+231: Attempting transaction from wait queue: T4 - execute_write_transaction(T4,x5,40)
+231: Transaction T4 not found
+231: Wait queue traversed, continuing with new input
+232: Committed Transaction T3
+232: Released locks for Transaction T3 and variables 3 at sites [4] 
+232: Released locks for Transaction T3 and variables 4 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2, 4] 
+232: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+232: Failed getting write locks at : T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+232: Attempting transaction from wait queue: T2 - execute_write_transaction(T2,x3,20)
+232: Acquiring Write Lock Successful: T2: x3 - 20; Sites: [4]
+232: Write Successful: T2: x3 - 20; Sites: [4]
+232: Wait queue traversed, continuing with new input
+233: Committed Transaction T2
+233: Released locks for Transaction T2 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2, 4] 
+233: Released locks for Transaction T2 and variables 3 at sites [4] 
+233: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,10)
+233: Acquiring Write Lock Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+233: Write Successful: T1: x2 - 10; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+233: Wait queue traversed, continuing with new input
+234: Committed Transaction T1
+234: Released locks for Transaction T1 and variables 6 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2, 4] 
+234: Released locks for Transaction T1 and variables 2 at sites [1, 5, 6, 7, 8, 9, 10, 3, 2, 4] 
+235: Began transaction T1
+236: Began transaction T2
+237: Acquiring Write Lock Successful: T1: x2 - 9; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+237: Write Successful: T1: x2 - 9; Sites: [1, 5, 6, 7, 8, 9, 10, 3, 2, 4]
+238: Site fail: 1; data = {'2': 10, '4': 30, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+239: Aborting Transaction T1
+239: Released locks for Transaction T1 and variables 2 at sites [5, 6, 7, 8, 9, 10, 3, 2, 4] 
+240: Began transaction T3
+241: Acquiring Write Lock Successful: T3: x2 - 100; Sites: [5, 6, 7, 8, 9, 10, 3, 2, 4]
+241: Write Successful: T3: x2 - 100; Sites: [5, 6, 7, 8, 9, 10, 3, 2, 4]
+242: Committed Transaction T3
+242: Released locks for Transaction T3 and variables 2 at sites [5, 6, 7, 8, 9, 10, 3, 2, 4] 
+243: Site Recovered: 1
+244: Site fail: 2; data = {'1': 50, '2': 100, '4': 30, '6': 60, '8': 88, '10': 100, '11': 110, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+245: Site fail: 3; data = {'2': 100, '4': 30, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+246: Site fail: 4; data = {'2': 100, '3': 20, '4': 30, '6': 60, '8': 88, '10': 100, '12': 120, '13': 130, '14': 140, '16': 160, '18': 180, '20': 200}
+247: Site fail: 5; data = {'2': 100, '4': 30, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+248: Site fail: 6; data = {'2': 100, '4': 30, '5': 91, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '15': 150, '16': 160, '18': 180, '20': 200}
+249: Site fail: 7; data = {'2': 100, '4': 30, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+250: Site fail: 8; data = {'2': 100, '4': 30, '6': 60, '7': 70, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '17': 170, '18': 180, '20': 200}
+251: Site fail: 9; data = {'2': 100, '4': 30, '6': 60, '8': 88, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '20': 200}
+252: Site fail: 10; data = {'2': 100, '4': 30, '6': 60, '8': 88, '9': 90, '10': 100, '12': 120, '14': 140, '16': 160, '18': 180, '19': 190, '20': 200}
+253: Failed getting read locks at : T2: x2; Sites: [1]
+253: Attempting transaction from wait queue: T2 - execute_read_transaction(T2,x2)
+253: Failed getting read locks at : T2: x2; Sites: [1]
+253: Wait queue traversed, continuing with new input
+254: Began transaction T5
+254: Attempting transaction from wait queue: T2 - execute_read_transaction(T2,x2)
+254: Failed getting read locks at : T2: x2; Sites: [1]
+254: Wait queue traversed, continuing with new input
+255: Acquiring Write Lock Successful: T5: x2 - 90; Sites: [1]
+255: Write Successful: T5: x2 - 90; Sites: [1]
+255: Attempting transaction from wait queue: T2 - execute_read_transaction(T2,x2)
+255: Failed getting read locks at : T2: x2; Sites: [1]
+255: Wait queue traversed, continuing with new input
+256: Committed Transaction T5
+256: Released locks for Transaction T5 and variables 2 at sites [1] 
+256: Attempting transaction from wait queue: T2 - execute_read_transaction(T2,x2)
+256: Read Successful: T2: x2 - 90; Sites: [1]
+256: Wait queue traversed, continuing with new input
+257: Committed Transaction T2
+257: Released locks for Transaction T2 and variables 2 at sites [1] 
+258: Began transaction T1
+259: Began transaction T2
+260: Read Successful: T2: x2 - 90; Sites: [1]
+261: Failed getting write locks at : T1: x2 - 202; Sites: [1]
+261: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,202)
+261: Failed getting write locks at : T1: x2 - 202; Sites: [1]
+261: Wait queue traversed, continuing with new input
+262: Acquiring Write Lock Successful: T2: x2 - 302; Sites: [1]
+262: Write Successful: T2: x2 - 302; Sites: [1]
+262: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,202)
+262: Failed getting write locks at : T1: x2 - 202; Sites: [1]
+262: Wait queue traversed, continuing with new input
+263: Committed Transaction T1
+263: Attempting transaction from wait queue: T1 - execute_write_transaction(T1,x2,202)
+263: Transaction T1 not found
+263: Wait queue traversed, continuing with new input
+264: Dump data
+264: Site 1: 2: 90, 4: 30, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 2: 1: 50, 2: 100, 4: 30, 6: 60, 8: 88, 10: 100, 11: 110, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 3: 2: 100, 4: 30, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 4: 2: 100, 3: 20, 4: 30, 6: 60, 8: 88, 10: 100, 12: 120, 13: 130, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 5: 2: 100, 4: 30, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 6: 2: 100, 4: 30, 5: 91, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 15: 150, 16: 160, 18: 180, 20: 200
+264: Site 7: 2: 100, 4: 30, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 8: 2: 100, 4: 30, 6: 60, 7: 70, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 17: 170, 18: 180, 20: 200
+264: Site 9: 2: 100, 4: 30, 6: 60, 8: 88, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 20: 200
+264: Site 10: 2: 100, 4: 30, 6: 60, 8: 88, 9: 90, 10: 100, 12: 120, 14: 140, 16: 160, 18: 180, 19: 190, 20: 200
+264: Done
