@@ -28,7 +28,8 @@ class DataManager:
         :return: value of variable if found, else False
         """
         if var in self.data:
-            return self.data[var]
+            if self.var_status[var] == "up":
+                return self.data[var]
         return False
 
     def write_data(self, var: str, value: int) -> bool:
