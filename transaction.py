@@ -103,7 +103,7 @@ class Transaction:
         for var in self.locks.keys():
             sites = [x for x in dict(self.locks[var]).keys() if x in dm_handler.up_sites]
             locks = dm_handler.set_lock(sites, var, 0, self.id)
-            print(f"Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
+            print(f"{timer.time}: Released locks for Transaction {self.id} and variables {var} at sites {sites} ")
         self.locks = {}
 
     def erase_lock(self, site):
@@ -119,6 +119,7 @@ class Transaction:
         :return: success/ failure
         """
         if self.RO_flag:
+            print(f"Ending RO Transaction {self.id}")
             return True
 
         read_data = {k: v for k, v in self.data.items() if k not in self.write_data}

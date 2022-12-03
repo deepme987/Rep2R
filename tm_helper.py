@@ -1,4 +1,4 @@
-#from __future__ import annotations
+# from __future__ import annotations
 
 from data_manager import DataManager
 from global_timer import timer
@@ -58,7 +58,7 @@ class TMHelper:
                 if site not in self.up_sites or self.last_failure[site] > time_stamp \
                         or (site in self.locks and var in self.locks[site].keys()
                             and ((var not in read_data and self.locks[site][var][0] != 2)
-                            or (var in read_data and self.locks[site][var][0] == 0))):
+                                 or (var in read_data and self.locks[site][var][0] == 0))):
                     return False
 
         for var, (value, sites) in data.items():
@@ -144,28 +144,27 @@ class TMHelper:
                     max_lock = self.locks[x][var][0]
                     txn = self.locks[x][var][1]
 
-        return (max_lock, txn)
-
+        return max_lock, txn
 
     def handle_failure(self, site: int) -> None:
-            """ Simulate failure in site s
+        """ Simulate failure in site s
             :param site: site to simulate failure
             """
-            # Remove site from list of up_sites
-            for site_id in self.up_sites:
-                if int(site) == site_id:
-                    self.up_sites.remove(site_id)
-            self.last_failure[site] = timer.time
-            # Update status in site_status
-            # Remove site from the RO list of sites
-            for var in self.RO_sites:
-                if site in self.RO_sites[var]:
-                    self.RO_sites[var].remove(site)
-            # Make all the locks for the site unlockable
-            for var in self.locks[site]:
-                self.locks[site][var] = (0, [])
-            # Implement site related failure
-            self.sites[site].failure()
+        # Remove site from list of up_sites
+        for site_id in self.up_sites:
+            if int(site) == site_id:
+                self.up_sites.remove(site_id)
+        self.last_failure[site] = timer.time
+        # Update status in site_status
+        # Remove site from the RO list of sites
+        for var in self.RO_sites:
+            if site in self.RO_sites[var]:
+                self.RO_sites[var].remove(site)
+        # Make all the locks for the site unlockable
+        for var in self.locks[site]:
+            self.locks[site][var] = (0, [])
+        # Implement site related failure
+        self.sites[site].failure()
 
     def handle_recovery(self, site: int) -> None:
         """ Simulate recovery in site s;

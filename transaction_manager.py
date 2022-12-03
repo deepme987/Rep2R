@@ -1,4 +1,4 @@
-from __future__ import annotations
+# from __future__ import annotations
 
 import re
 from collections import defaultdict
@@ -7,7 +7,11 @@ from transaction import Transaction
 from tm_helper import TMHelper
 from global_timer import timer
 
-DEBUG = False   # Verbose flag
+DEBUG = False  # Verbose flag
+
+
+def print_with_time(sent: str = "", end="\n"):
+    print(f"{timer.time}: " + sent, end=end)
 
 
 class TransactionManager:
@@ -40,41 +44,48 @@ class TransactionManager:
         timer.reset_timer()
         with open(file_path, 'r') as fil:
             for line in fil.readlines():
-                if line != "\n" and "//" not in line:
-                    tx = line.split('(')[0]
+                if line != "\n":
+                    uncomment = line.strip().split("//")[0]
+                    tx = uncomment.split('(')[0]
+                    if len(tx) == 0 or "//" in uncomment:
+                        continue
                     if tx not in self.function_mapper:
-                        print("SKIPPING -", line)
+                        print_with_time("SKIPPING -", line)
                     else:
                         self.deadlock_cycle()
                         if len(self.wait_queue) > 0:
                             temp_wait_queue = self.wait_queue
                             self.wait_queue = []
                             for transaction, function, args, _ in temp_wait_queue:
+                                print_with_time(f"Attempting transaction from wait queue: ", end="")
                                 if args != ['']:
-                                    if DEBUG:
-                                        print(f"{timer.time}: {transaction} - {function.__name__}({','.join(args)})")
+                                    print(f"{transaction.id} - {function.__name__}({','.join(args)})")
                                     function(*args)
                                 else:
-                                    if DEBUG:
-                                        print(f"{timer.time}: {transaction} - {function.__name__}()")
+                                    print(f"{transaction.id} - {function.__name__}()")
                                     function()
+                            print_with_time(f"Wait queue traversed, continuing with new input")
 
                         args = re.findall(r'\(.*\)', line)[0][1:-1].split(",")
                         args = [arg.strip() for arg in args]
                         timer.increment_timer()
                         if args != ['']:
                             if DEBUG:
-                                print(f"{timer.time}: {tx} - {self.function_mapper[tx].__name__}({','.join(args)})")
-                            self.function_mapper[tx](*args)
+                                print_with_time(f"{tx} - {self.function_mapper[tx].__name__}({','.join(args)})")
+                            try:
+                                self.function_mapper[tx](*args)
+                            except TypeError:
+                                print_with_time("INVALID ARGUMENT in input, skipping line")
                         else:
                             if DEBUG:
-                                print(f"{timer.time}: {tx} - {self.function_mapper[tx].__name__}()")
+                                print_with_time(f"{tx} - {self.function_mapper[tx].__name__}()")
                             self.function_mapper[tx]()
 
     def begin_transaction(self, tx: str) -> None:
         """ Create a Transaction node and add it to the list
         :param tx: transaction_id
         """
+        print_with_time("", end="")
         transaction = Transaction(tx)
         self.transactions[tx] = transaction
 
@@ -83,6 +94,7 @@ class TransactionManager:
         :param tx: transaction_id
         :return: bool to indicate success/ failure
         """
+        print_with_time("", end="")
         transaction = Transaction(tx, RO_flag=True)
         result = transaction.ro_read(dm_handler=self.dm_handler)
         if result:
@@ -98,7 +110,7 @@ class TransactionManager:
         :return: flag to indicate success/ failure
         """
         if tx not in self.transactions:
-            print(f"Transaction {tx} not found")
+            print_with_time(f"Transaction {tx} not found")
             return False
         _var = var
         var = var[1]
@@ -106,19 +118,21 @@ class TransactionManager:
         if self.transactions[tx].RO_flag:
             result = self.transactions[tx].read(sites, var, self.dm_handler)
             if result:
-                print(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
+                print_with_time(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
             else:
-                print(f"Error reading at : {tx}: x{var}; Sites: {sites}")
+                print_with_time(f"Error reading at : {tx}: x{var}; Sites: {sites}")
         elif self.transactions[tx].request_lock(sites, var, 1, self.dm_handler):
             result = self.transactions[tx].read(sites, var, self.dm_handler)
             if result:
-                print(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
+                print_with_time(f"Read Successful: {tx}: x{var} - {result[var]}; Sites: {sites}")
             else:
-                print(f"Error reading at : {tx}: x{var}; Sites: {sites}")
+                self.wait_queue.append((self.transactions[tx], self.execute_read_transaction,
+                                        [tx, _var], {_var: 1}))
+                print_with_time(f"Error reading at : {tx}: x{var}; Sites: {sites}")
         else:
             self.wait_queue.append((self.transactions[tx], self.execute_read_transaction,
                                     [tx, _var], {_var: 1}))
-            print(f"Failed getting read locks at : {tx}: x{var}; Sites: {sites}")
+            print_with_time(f"Failed getting read locks at : {tx}: x{var}; Sites: {sites}")
 
     def execute_write_transaction(self, tx: str, var: str, value: int) -> bool:
         """ Execute write transaction tx
@@ -128,22 +142,22 @@ class TransactionManager:
         :return: flag to indicate success/ failure
         """
         if tx not in self.transactions:
-            print(f"Transaction {tx} not found")
+            print_with_time(f"Transaction {tx} not found")
             return False
         _var = var
         var = var[1]
         sites = self.routing(var)
         if self.transactions[tx].request_lock(sites, var, 2, self.dm_handler):
-            print(f"Acquiring Write Lock Successful: {tx}: x{var} - {value}; Sites: {sites}")
+            print_with_time(f"Acquiring Write Lock Successful: {tx}: x{var} - {value}; Sites: {sites}")
             result = self.transactions[tx].write(sites, var, value)
             if result:
-                print(f"Write Successful: {tx}: x{var} - {value}; Sites: {sites}")
+                print_with_time(f"Write Successful: {tx}: x{var} - {value}; Sites: {sites}")
             else:
-                print(f"Error writing at: {tx}: x{var} - {value}; Sites: {sites}")
+                print_with_time(f"Error writing at: {tx}: x{var} - {value}; Sites: {sites}")
         else:
             self.wait_queue.append((self.transactions[tx], self.execute_write_transaction,
                                     [tx, _var, value], {_var: 2}))
-            print(f"Failed getting write locks at : {tx}: x{var} - {value}; Sites: {sites}")
+            print_with_time(f"Failed getting write locks at : {tx}: x{var} - {value}; Sites: {sites}")
 
     def end_transaction(self, tx: str) -> bool:
         """" Validate and commit - if any, and delete tx from list
@@ -151,8 +165,9 @@ class TransactionManager:
         :return: flag to indicate success/ failure
         """
         if tx not in self.transactions:
-            print(f"Transaction {tx} not found")
+            print_with_time(f"Transaction {tx} not found")
             return False
+        print_with_time("", end="")
         flag = self.transactions[tx].commit(self.dm_handler)
         self.transactions[tx].release_lock(self.dm_handler)
         if not flag:
@@ -165,7 +180,7 @@ class TransactionManager:
         :param tx: transaction_id
         """
         self.transactions[tx].abort(self.dm_handler)
-        #del self.transactions[tx]
+        # del self.transactions[tx]
 
     def routing(self, var: str) -> list:
         """ Find the site to route execution of T
@@ -183,28 +198,31 @@ class TransactionManager:
     def deadlock_cycle(self) -> None:
         """ Create a tree from wait_queue and run DFS to find a cycle - Aborts youngest tx """
         conflicts = defaultdict(set)
+
         for i in range(len(self.wait_queue)):
             i_locks = self.wait_queue[i][3]
-            for j in range(len(self.wait_queue)):
-                if i == j:
+            for tx in self.transactions:
+                if self.wait_queue[i][0].id == self.transactions[tx].id:
                     continue
                 j_locks = {'x' + str(var): max([status for _, (status, _) in sites.items()])
-                           for var, sites in self.wait_queue[j][0].locks.items()}
+                           for var, sites in self.transactions[tx].locks.items()
+                           if len(sites) > 0
+                           }
+
                 for var in {*i_locks}.intersection({*j_locks}):
                     if i_locks[var] == 2 or j_locks[var] == 2:
-                        conflicts[i].add(j)
+                        conflicts[self.wait_queue[i][0].id].add(self.transactions[tx].id)
         path = self.dfs_handler(conflicts)
 
         if path:
             min_index, min_time = None, -1
-            print(path)
             for tx in path:
                 if min_time < self.transactions[tx].start_time:
                     min_time = self.transactions[tx].start_time
                     min_index = tx
             if min_index is not None:
-                print(f"DEADLOCK FOUND: {[self.transactions[i].id for i in path]}; "
-                      f"Aborting transaction: {self.transactions[min_index].id}")
+                print_with_time(f"DEADLOCK FOUND: {[self.transactions[i].id for i in path]}; "
+                                f"Aborting transaction: {self.transactions[min_index].id}")
                 self.abort_transaction(self.transactions[min_index].id)
                 for tx in self.wait_queue:
                     if tx[0].id == self.transactions[min_index].id:
@@ -245,6 +263,7 @@ class TransactionManager:
         """ Simulate failure in site S
         :param site: site to simulate failure
         """
+        print_with_time("", end="")
         self.dm_handler.handle_failure(int(site))
         for tx in self.transactions:
             self.transactions[tx].erase_lock(int(site))
@@ -253,16 +272,18 @@ class TransactionManager:
         """ Recover site S from failure
         :param site: site to simulate recovery
         """
+        print_with_time("", end="")
         self.dm_handler.handle_recovery(int(site))
 
     def dump(self) -> None:
         """ Get all variables from all sites and dump """
+        print_with_time("Dump data")
         dump_data = self.dm_handler.dump()
         for site, var_val in sorted(dump_data.items(), key=lambda x: x[0]):
-            print(f"Site {site}: {', '.join([f'{var}: {val}' for var, val in var_val.items()])}")
+            print_with_time(f"Site {site}: {', '.join([f'{var}: {val}' for var, val in var_val.items()])}")
 
 
 if __name__ == "__main__":
     tm = TransactionManager()
-    tm.input_parser("projectsampletests.deadlockdetection.txt")
-    print("Done")
+    tm.input_parser()
+    print_with_time("Done")

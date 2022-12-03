@@ -47,13 +47,13 @@ class DataManager:
     def failure(self) -> None:
         """ Simulate a site failure """
         # Make all replicated variables unavailable
+        print(f"Site fail: {self.id}; data = {self.data}")
         self.status = 0
         for var in self.var_status:
             self.var_status[var] = "down"
         for var in range(2, 21, 2):
             if (var % 2 == 0) and str(var) in self.data:
                 self.data.pop(str(var))
-        print(f"Site fail: {self.id}; data = {self.data}")
 
     def recovery(self) -> None:
         """ Recover a site from failure """
