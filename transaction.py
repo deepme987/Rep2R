@@ -110,7 +110,7 @@ class Transaction:
         self.locks = {}
 
     def erase_lock(self, site):
-        """Erase locks on a site failure"""
+        """Erase locks of a transaction on a site when the site fails"""
         for var in self.data.keys():
             if site in self.locks[var].keys():
                 # self.locks[var][site] = (0, [])
