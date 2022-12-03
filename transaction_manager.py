@@ -211,15 +211,18 @@ class TransactionManager:
 
         if path:
             min_index, min_time = None, -1
+            print(path)
             for tx in path:
-                if min_time < self.wait_queue[tx][0].start_time:
-                    min_time = self.wait_queue[tx][0].start_time
+                if min_time < self.transactions[tx].start_time:
+                    min_time = self.transactions[tx].start_time
                     min_index = tx
             if min_index is not None:
-                print(f"DEADLOCK FOUND: {[self.wait_queue[i][0].id for i in path]}; "
-                      f"Aborting transaction: {self.wait_queue[min_index][0].id}")
-                self.abort_transaction(self.wait_queue[min_index][0].id)
-                del self.wait_queue[min_index]
+                print(f"DEADLOCK FOUND: {[self.transactions[i].id for i in path]}; "
+                      f"Aborting transaction: {self.transactions[min_index].id}")
+                self.abort_transaction(self.transactions[min_index].id)
+                for tx in self.wait_queue:
+                    if tx[0].id == self.transactions[min_index].id:
+                        self.wait_queue.remove(tx)
 
     def dfs_handler(self, adj: dict) -> list | bool:
         """ DFS for deadlock_cycle
