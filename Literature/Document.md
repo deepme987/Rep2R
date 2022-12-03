@@ -3,8 +3,10 @@ Replicated Concurrency Control and Recovery
 
 ## Team Members
 ```angular2html
-Deep Mehta: dnm7500 -> Execute Transactions (R/W/C/A), Available Copies, Replication, Deadlock
-Sarvani Nadiminty: sn2884@nyu.edu -> Lock Management, Validate Executions, Failure, Recovery 
+Deep Mehta: dnm7500
+ -> Execute Transactions (R/W/C/A), Available Copies, Replication, Deadlock
+Sarvani Nadiminty: sn2884@nyu.edu
+-> Lock Management, Validate Executions, Failure, Recovery 
 ```
 
 ## Design Flow
@@ -66,8 +68,8 @@ class TMHelper:
         sites = []        # [S1, S2, ..., S10]
         up_sites = []     # [list_of_available_sites]
         RO_sites = {}     # {var: {S1, S2, ..., Sn}} - valid sites for var
-        locks = {}        # {site1: {'1':(0,[]), '2':(1,['T1']),..., '20':(1,['T1'])},..site10:{}}  - locks for all variables at all sites
-        site_status = {}  # {site1: {'1':"up",...}} stores the variable status of sites.
+        locks = {}        # {S1: {'1':(0,[]), ..., '20':(1,['T1'])}...}
+        site_status = {}  # {site1: {'1':"up",...}} stores status of sites
         last_failure = {} # {S1: 4}
     
     def read(self, var, sites): ...
