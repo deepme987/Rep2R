@@ -28,10 +28,14 @@ sudo apt-get install libsqlite3-dev
 pip install reprozip
 pip install reprounzip
 
+# Packing to ReproZip
 cd Rep2Rec
 reprozip trace python3 transaction_manager.py
-For packaging the output and the files
 reprozip pack rep_ADB.rpz
+
+# Unpacking and running the code
+reprounzip directory setup rep_ADB.rpz ~/repunzip
+reprounzip directory run repunzip
 ```
 
 ## Running locally
