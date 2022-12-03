@@ -4,7 +4,7 @@ import re
 from collections import defaultdict
 
 from transaction import Transaction
-from data_manager import DataManager
+from tm_helper import TMHelper
 from global_timer import timer
 
 DEBUG = False  # Verbose flag
@@ -14,7 +14,7 @@ class TransactionManager:
     def __init__(self):
         self.transactions = {}  # T1, T2
         self.wait_queue = []  # (Tx, function, args, wait_for_vars)
-        self.dm_handler = DataManager()
+        self.dm_handler = TMHelper()
 
         self.dm_handler.flush_sites()
 
@@ -208,7 +208,6 @@ class TransactionManager:
                     if i_locks[var] == 2 or j_locks[var] == 2:
                         conflicts[self.wait_queue[i][0].id].add(self.transactions[tx].id)
         path = self.dfs_handler(conflicts)
-        print(conflicts)
 
         if path:
             min_index, min_time = None, -1
