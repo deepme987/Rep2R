@@ -18,12 +18,19 @@ Sarvani Nadiminty: sn2884@nyu.edu
 
 ## ReproZip installation
 ```angular2html
+Install the following
+sudo apt-get install python-dev 
+sudo apt-get install python-pip 
+sudo apt-get install sqlite3
+sudo apt-get install libsqlite3-dev
 
+Install reprozip as follows:
+pip install reprozip
+pip install reprounzip
 ```
 
 ## Running the code
 ```angular2html
-
 ```
 
 ## Sample test input
